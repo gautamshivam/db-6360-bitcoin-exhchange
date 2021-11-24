@@ -1,6 +1,6 @@
 module.exports = {
     HOST: "localhost",
-    PORT: 8889,
+    PORT: 3306,
     USER: "root",
     PASSWORD: "root",
     DB: "bitcoindb"
