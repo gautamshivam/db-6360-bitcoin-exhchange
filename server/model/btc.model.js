@@ -10,12 +10,22 @@ BTC.Trade = function(trade) {
     this.trader_id = trade.trader_id;
     this.btc_qty = trade.btc_qty;
     this.btc_rate = trade.btc_rate;
-    if(trade.commission_type == 'FIAT') {
-      this.transaction_value = trade.btc_qty * trade.btc_rate + trade.commission_value;
-    }
-    if(trade.commission_type == 'BTC') {
-      this.transaction_value = trade.btc_qty * trade.btc_rate;
-      this.btc_qty = this.btc_qty - trade.commission_value;
+    if(trade.transaction_type === 'BUY') {
+      if(trade.commission_type === 'FIAT') {
+        this.transaction_value = trade.btc_qty * trade.btc_rate + trade.commission_value;
+      }
+      if(trade.commission_type === 'BTC') {
+        this.transaction_value = trade.btc_qty * trade.btc_rate;
+        this.btc_qty = this.btc_qty - trade.commission_value;
+      }
+    } 
+    if(trade.transaction_type === 'SELL') {
+      if(trade.commission_type === 'FIAT') {
+        this.transaction_value = trade.btc_qty * trade.btc_rate - trade.commission_value;
+      }
+      if(trade.commission_type === 'BTC') {
+        this.transaction_value = (this.btc_qty - trade.commission_value) * trade.btc_rate;
+      }
     }
     this.transaction_type = trade.transaction_type;
     this.commission_type = trade.commission_type;

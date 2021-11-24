@@ -32,8 +32,8 @@ exports.trade = (req, res) => {
 
 // Find all transactions
 exports.getAllTrades = (req, res) => {
-    client_id = req.query.client_id;
-    trader_id = req.query.trader_id;
+    const client_id = req.query.client_id;
+    const trader_id = req.query.trader_id;
     BTC.getAllTrades({client_id:client_id, trader_id:trader_id},(err, data) => {
          if (err)
              res.status(500).send({
