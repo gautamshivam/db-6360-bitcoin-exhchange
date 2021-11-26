@@ -19,6 +19,12 @@
 //new Date(customers.timestamp).getTime()>=start_date.getTime() &&
 //new Date(customers.timestamp).getTime()<=month_end_date.getTime())
 
+//Goals to implement still.........
+// 1. Input start date from the user and use it as the start date for javascript 
+// 2. Dropdown Menu for monthly, weekly and monthly transaction
+// 3. Applying above filters for daily, weekly and monthly transactions
+// 4. Displaying the table using map.filter()
+
 
 import React, { Component } from 'react';
 //start_date => variable in javascript which is entered by user
