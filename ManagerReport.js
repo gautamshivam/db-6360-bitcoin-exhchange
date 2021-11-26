@@ -1,3 +1,10 @@
+//Goals to implement still.........
+// 1. Input start date from the user and use it as the start date for javascript 
+// 2. Dropdown Menu for monthly, weekly and monthly transaction
+// 3. Applying above filters for daily, weekly and monthly transactions
+// 4. Displaying the table using map.filter()
+// 5. filling the null values of the trader id with 'NULL' character in the table
+
 //Daily Transactions
 //const start_date=new Date('2021-11-20')
 //const daily_end_date=new Date(start_date.getFullYear(),start_date.getMonth(),start_date.getDate(),23,59,59,0)
@@ -19,11 +26,7 @@
 //new Date(customers.timestamp).getTime()>=start_date.getTime() &&
 //new Date(customers.timestamp).getTime()<=month_end_date.getTime())
 
-//Goals to implement still.........
-// 1. Input start date from the user and use it as the start date for javascript 
-// 2. Dropdown Menu for monthly, weekly and monthly transaction
-// 3. Applying above filters for daily, weekly and monthly transactions
-// 4. Displaying the table using map.filter()
+
 
 
 import React, { Component } from 'react';
