@@ -20,36 +20,118 @@
 //new Date(customers.timestamp).getTime()<=month_end_date.getTime())
 
 
-import React, { Component } from 'react';
-import './ManagerReport.css'
+import React, { Component, createRef } from 'react'
+import {Form} from 'react-bootstrap'
+import {Table} from 'react-bootstrap'
+import './ManagerReport.css';
 //start_date => variable in javascript which is entered by user
-const start_date=new Date('2021-11-22')
-const start_date1=new Date('2021-11-19'.concat('T23:59:59'))
-const daily_end_date=new Date(start_date.getFullYear(),start_date.getMonth(),start_date.getDate(),23,59,59,0)
-const week_end_date=new Date(start_date.getFullYear(),start_date.getMonth(),start_date.getDate()+7,23,59,59,0)
-const month_end_date=new Date(start_date.getFullYear(),start_date.getMonth(),start_date.getDate()+30,23,59,59,0)
+//const start_date=new Date('2021-11-22')
+//const start_date1=new Date('2021-11-19'.concat('T23:59:59'))
+//const daily_end_date=new Date(start_date.getFullYear(),start_date.getMonth(),start_date.getDate(),23,59,59,0)
+//const week_end_date=new Date(start_date.getFullYear(),start_date.getMonth(),start_date.getDate()+7,23,59,59,0)
+//const month_end_date=new Date(start_date.getFullYear(),start_date.getMonth(),start_date.getDate()+30,23,59,59,0)
+
+
+
 class ManagerReport extends Component {
-  constructor(){
-    super();
+  
+
+
+  constructor(props){
+    super(props);
     this.state = {
-      customers: []
+      customers: [],
+      result:[],
+      type:'all', //Daily weekly or monthly
+      start_date:'',
+      end_date:''
     };
+    this.handleType=this.handleType.bind(this);
+    this.handleStartDate=this.handleStartDate.bind(this);
+    this.handleSubmit=this.handleSubmit.bind(this);
   }
+
+  handleType(event){
+    console.log('filter type changed '+event.target.value);
+    this.setState({type:event.target.value});
+  }
+  handleStartDate(event){
+    console.log('filter value changed '+event.target.value);
+
+    this.setState({start_date:event.target.value});
+  }
+  handleSubmit(event){
+    
+    fetch('/btc/trade')
+    .then(res => res.json())
+    .then(data => this.setState({customers:data}, () => console.log('Transactions fetched...', data)));
+      this.setState({result:this.state.customers});
+      console.log(this.state.type);
+      if(this.state.type==='all'){
+         console.log(this.state.result);
+      }
+     else if(this.state.type==='daily'){
+       console.log("d");
+       //var end_date=new Date(this.state.start_date.getFullYear(),this.state.start_date.getMonth(),this.state.start_date.getDate(),23,59,59,0);
+       //this.setState({end_date:end_date});
+        var filtered=this.state.customers.filter((customers) =>new Date(customers.timestamp).getDate()== this.state.start_date);
+        this.setState({result:filtered})
+        console.log(filtered)
+     }
+
+     else if(this.state.type==='weekly'){
+       console.log("w")
+       var currDAte = new Date();
+  
+       var weekBeforeDate = new Date(currDAte.getTime() - (3*24*60*60*1000));
+
+       console.log(weekBeforeDate.getDate());
+      var filtered=this.state.customers.filter((customers) =>new Date(customers.timestamp).getTime() >=  weekBeforeDate.getTime());
+      this.setState({result:filtered})
+      console.log('filtered weekly',filtered);
+     }
+
+     else if(this.state.type==='monthly'){
+       console.log("m")
+       var end_date=new Date(this.state.start_date.getFullYear(),this.state.start_date.getMonth()+1,this.state.start_date.getDate(),23,59,59,0);
+      this.setState({end_date:end_date});
+      var filtered=this.state.customers.filter((customers) =>new Date(customers.timestamp).getTime()>=this.state.start_date.getTime()&&new Date(customers.timestamp).getTime()<=this.state.end_date .getTime());
+      this.setState({result:filtered})
+      console.log(filtered)
+     }
+
+  }
+  
   //Main Logic
   //Daily Transactions--start-date= new Date(<START _DATE_VARIABLE_INPUT>.concat('T00:00:00Z'))
   //this.state.customers.filter((customers) => new Date(customers.timestamp).getTime()<=daily_end_date.getTime())
   //this.state.customers.filter((customers) => new Date(customers.timestamp).getTime()>=start_date.getTime() && new Date(customers.timestamp).getTime()<=week_end_date.getTime())
-  componentDidMount() {
-    fetch('/btc/trade')
-      .then(res => res.json())
-      .then(customers => this.setState({customers}, () => console.log('Transactions fetched...', customers)));
-  }
+
  
   render() {
     return (
       <div>
+        
+       <Form onSubmit={this.handleSubmit}>
+         <select value={this.state.type} onChange={this.handleType}>
+           <option value='all'>All</option>
+           <option value='daily'>Daily</option>
+
+           <option value='weekly'>Weekly</option>
+           <option value='monthly'>Monthly</option>
+         </select>
+         <label>
+				          Enter start date: <br/>
+				          <input type="text" value={this.state.start_date} onChange={this.handleStartDate} />
+				  </label><br/>
+					  	 <input type="button" value="Submit form"  onClick={this.handleSubmit}/>
+
+         </Form>
+
       <h2>Transactions</h2> 
-      <table id="#table-example-1" style={{"borderWidth":"1px", 'borderColor':"#aaaaaa", 'borderStyle':'solid', 'border-collapse':'collapse'}}>
+      
+      <table>
+        <tbody><tr>
       <th>TID</th>
       <th>client_id</th>
       <th>trader_id</th>
@@ -65,12 +147,10 @@ class ManagerReport extends Component {
       <th> trader_fname</th>
       <th>trader_lname </th>
       <th> trader_email</th>
+      </tr>
       { 
         //this.state.customers.filter((customers) => new Date(customers.timestamp).getTime()>=start_date.getTime() && new Date(customers.timestamp).getTime()<=week_end_date.getTime()).
-         this.state.customers.filter((customers) => 
-         new Date(customers.timestamp).getTime()>=start_date.getTime() &&
-         new Date(customers.timestamp).getTime()<=week_end_date .getTime()
-         ).map(customers => 
+         this.state.result.map(result => 
            /*
   {"tid":6,
   "client_id":10,
@@ -90,28 +170,28 @@ class ManagerReport extends Component {
   
   */
         <tr>
-          <td>{customers.tid}</td>
-          <td>{customers.client_id}</td>
-          <td>{customers.trader_id}</td>
-          <td>{customers.btc_qty}</td>
-          <td>{customers.btc_rate}</td>
-          <td>{customers.transaction_type}</td>
-          <td>{customers.commission_type}</td>
-          <td>{customers.commission_value}</td>
-          <td>{customers.timestamp}</td>
-          <td>{customers.client_fname}</td>
-          <td>{customers.client_lname}</td>
-          <td>{customers.client_email}</td>
-          <td>{customers.trader_fname}</td>
-          <td>{customers.trader_lname}</td>
-          <td>{customers.trader_email}</td>
+          <td>{result.tid}</td>
+          <td>{result.client_id}</td>
+          <td>{result.trader_id}</td>
+          <td>{result.btc_qty}</td>
+          <td>{result.btc_rate}</td>
+          <td>{result.transaction_type}</td>
+          <td>{result.commission_type}</td>
+          <td>{result.commission_value}</td>
+          <td>{result.timestamp}</td>
+          <td>{result.client_fname}</td>
+          <td>{result.client_lname}</td>
+          <td>{result.client_email}</td>
+          <td>{result.trader_fname}</td>
+          <td>{result.trader_lname}</td>
+          <td>{result.trader_email}</td>
         </tr>
         )
      }
+     </tbody>
       </table>
     </div>
     );
-  
 } 
 }
 
