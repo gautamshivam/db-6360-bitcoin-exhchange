@@ -6,6 +6,10 @@
     font-family: Arial, Helvetica, sans-serif;
   }
   
+  .header{
+    font-size: 20px;
+  }
+
   /* Float four columns side by side */
   .column {
     float: left;

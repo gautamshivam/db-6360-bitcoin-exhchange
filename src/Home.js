@@ -2,7 +2,7 @@ import React from 'react'
 import Login from './Login'
 import Register from './Register'
 import {useState} from 'react';
-function Home(){
+function Home(props){
     const [isOpenLogin, setIsOpenLogin] = useState(false)
   const [isOpenRegister, setIsOpenRegister] = useState(false)
     return (
