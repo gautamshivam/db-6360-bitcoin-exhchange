@@ -18,7 +18,7 @@ class Trader_Profile extends React.Component{
 	}
 
 	componentDidMount() {
-	    fetch('http://localhost:5000/clients/7')
+	    fetch('http://localhost:5000/users/2')
 	    .then(res => res.json())
 	    .then((data) => {
 	      this.setState({ 
