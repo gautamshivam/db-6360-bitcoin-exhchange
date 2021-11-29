@@ -153,7 +153,6 @@
         </thead>
         <tbody>
         { 
-            //this.state.customers.filter((customers) => new Date(customers.timestamp).getTime()>=start_date.getTime() && new Date(customers.timestamp).getTime()<=week_end_date.getTime()).
             this.state.result.map(result => 
             <tr key={result.tid}>
             <td>{result.tid}</td>
