@@ -1,4 +1,8 @@
 body {
+  background-image: url("https://st3.depositphotos.com/5397654/14218/v/600/depositphotos_142188448-stock-video-bitcoin-icon-on-abstract-green.jpg");
+
+    background-repeat: no-repeat;
+    background-size: cover;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

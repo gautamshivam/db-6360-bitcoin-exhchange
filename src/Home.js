@@ -7,7 +7,7 @@ function Home(props){
   const [isOpenRegister, setIsOpenRegister] = useState(false)
     return (
         <div>
-            <h1>Welcome to Bitcoin transaction System</h1>
+            <h1 style={{color:"white"}}>Welcome to Bitcoin transaction System</h1>
             <button onClick={() => setIsOpenLogin(true)}>Login</button>
         <Login open={isOpenLogin} onClose={() => setIsOpenLogin(false)}></Login>
         <button onClick={() => setIsOpenRegister(true)}>Register</button>

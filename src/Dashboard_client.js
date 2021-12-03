@@ -1,9 +1,13 @@
 import { transaction } from 'mobx';
 import React from 'react'
 import { useHistory } from 'react-router'
+import { useContext } from 'react';
+import { UserContext } from './UserContext';
 import './Dashboard_client.css'
+import Login from './Login';
 
 function Dashboard_client(){
+  const {user,setUser}=useContext(UserContext)
   const history=useHistory();
   const myProfile=()=>{
     history.push('/client_profile')
@@ -16,7 +20,16 @@ function Dashboard_client(){
   }
     return (
           <div>
+            <div class="topnav">
+              <h1 style={{display:"inline-block",color:"white",float:"left"}}>Bitcoin Transaction System</h1>
+           <a href="#about" style={{float:"right"}}>Logout</a>
+        </div>
+            <div>{JSON.stringify(user,null,2)}
+            {async()=>{const user=await Login();
+            setUser(user)}}
+            </div>
             <div class="header"><h1>Dashboard</h1></div>
+            <br></br>
               <div class="row">
   <div class="column">
     <div class="card" onClick={myProfile}>

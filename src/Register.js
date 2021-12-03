@@ -18,22 +18,12 @@ const Register = ({open,onClose}) => {
     const signUp=async ()=>{
       let item={fname,lname,phone,cellNumber,userType,email,password}
 
-      let result=await fetch("/users",{
+      let result=fetch("http://localhost:5000/users",{
         method:'POST',
         body:JSON.stringify(item),
-        headers:{
-          "Cache-Control":'no-cache',
-          "Postman-Token":'<calculated when request is sent>',
-          "Content-Type":'application/json',
-          "Content-Length":'<calculated when request is sent>',
-          "Host":'<calculated when request is sent>',
-          "User-Agent":'PostmanRuntime/7.28.3',
-          "Accept-Encoding":'gzip, deflate, br',
-          "Connection":'keep-alive',
-          "Accept":'*/*',
-        }
+      
       })
-      result=await result.json()
+  
       alert('You have registered sucessfully')
       localStorage.setItem("user-info",JSON.stringify(result))
     }

@@ -5,10 +5,10 @@ import { useState } from 'react'
 
 const Login = ({open,onClose}) => {
     const [email,setEmail]=useState("")
-    const [password,setPassword]=useState("")
+    const [pwd,setPassword]=useState("")
     if (!open) return null
     const login=async()=>{
-        let item={email,password}
+        let item={email,pwd}
         let result=await fetch("/auth/login",{
             method:'POST',
             headers:{
@@ -39,7 +39,7 @@ const Login = ({open,onClose}) => {
              <input type="text" placeholder="Enter Email" name="email" onChange={(e)=>setEmail(e.target.value)} required/>
 
             <label for="password"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="password" onChange={(e)=>setPassword(e.target.value)} required/>
+            <input type="password" placeholder="Enter Password" name="pwd" onChange={(e)=>setPassword(e.target.value)} required/>
 
             <button type="submit" onClick={login}>Login</button>
             <label>

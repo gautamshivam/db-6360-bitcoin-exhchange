@@ -1,10 +1,12 @@
 import React from 'react'
 import { useState } from 'react'
+import Navbar from './Navbar'
 
 const Deposit = () => {
     const [deposit,setDeposit]=useState("")
     return (
         <div>
+            <Navbar/>
              <form>
             <fieldset>
             <legend>Deposit Form</legend>
