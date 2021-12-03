@@ -11,7 +11,7 @@ bank.Deposit = function(deposit){
   this.client_id = deposit.client_id;
   this.trader_id = deposit.trader_id;
   this.amount = deposit.amount;
-  this.type = "DEPOSIT",
+  this.type = "DEPOSIT";
   this.status = "APPROVED"
 };
 
@@ -19,7 +19,7 @@ bank.Withdrawal = function(deposit){
   this.client_id = deposit.client_id;
   this.trader_id = deposit.trader_id;
   this.amount = deposit.amount;
-  this.type = "WITHDRAW",
+  this.type = "WITHDRAW";
   this.status = "APPROVED"
 };
 

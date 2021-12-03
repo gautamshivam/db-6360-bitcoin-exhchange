@@ -27,6 +27,7 @@ BTC.Trade = function(trade) {
         this.transaction_value = (this.btc_qty - trade.commission_value) * trade.btc_rate;
       }
     }
+
     this.transaction_type = trade.transaction_type;
     this.commission_type = trade.commission_type;
     this.commission_value = trade.commission_value;

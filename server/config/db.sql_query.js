@@ -5,6 +5,9 @@ module.exports.findUserByIdSQL = (id) => {
 module.exports.findUserByEmailPwdSQL = (auth) => {
     return `select * from user where email='${auth.email}' and pwd='${auth.pwd}'`
 }
+module.exports.findUserByEmail = (email) => {
+    return `select * from user where email='${email}'`
+}
 
 module.exports.findAllClientsSQL = () => {
     return `select * from user 
