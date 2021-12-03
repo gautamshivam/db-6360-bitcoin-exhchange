@@ -19,4 +19,16 @@ Auth.login = (auth, result) => {
     });
 };
 
+Auth.findUserByEmail = (email, result) => {
+    sql.query(query.findUserByEmail(email), (err, res) => {
+        if (err) {
+          console.log("error: ", err);
+          result(err, null);
+          return;
+        }
+        console.log("user found: ", res);
+        result(null, res[0]);
+    });
+};
+
 module.exports = Auth;

@@ -17,7 +17,7 @@ exports.create = (req, res) => {
         cell_number: req.body.cell_number,
         user_type: req.body.user_type,
         email: req.body.email,
-        pwd: req.body.pwd,
+        pwd: req.body.password,
     });
 
     // Save User in the database

@@ -1,6 +1,6 @@
-const Auth = require("../model/auth.model.js");
+const passport = require('passport');
 
-exports.login = (req, res) => {
+exports.login = (req, res, next) => {
     // Validate request
     if (!req.body) {
         res.status(400).send({
@@ -8,19 +8,31 @@ exports.login = (req, res) => {
         });
     }
 
-    // Create a deposit
-    const auth = new Auth({
-        email: req.body.email,
-        pwd: req.body.pwd,
-    });
+    passport.authenticate("local", (err, user, info) => {
+        console.log("authenticate user", user);
+        if(err) throw err;
+        if(!user) {
+            res.status(200)
+            res.send("no user exists with these credential");
+        }
+        else {
+            req.logIn(user, err => {
+                if(err) throw err;
+                res.send("successfully authenticated");
+                console.log(req.user);
+            })
+        }
+    })(req, res, next);
+}
 
-    //  deposit money for a client
-    Auth.login(auth, (err, data) => {
-        if (err)
-        res.status(500).send({
-            message:
-            err.message || "Some error occurred while creating the Customer."
-        });
-        else res.send(data);
-    });
+exports.logout = (req, res) => {
+    req.logout();
+    res.send("logged out");
+}
+
+exports.user = (req, res) => {
+    console.log("found user...", req.user)
+    const user = req.user;
+    delete user['pwd']
+    res.send(user);
 }

@@ -3,8 +3,8 @@ const bank = require("../model/bank.model.js");
 
 // Find all transactions
 exports.getAll = (req, res) => {
-    client_id = req.query.client_id;
-    trader_id = req.query.trader_id;
+    const client_id = req.query.client_id;
+    const trader_id = req.query.trader_id;
     bank.getAll({client_id:client_id, trader_id:trader_id},(err, data) => {
          if (err)
              res.status(500).send({
@@ -89,3 +89,4 @@ exports.withdraw = (req, res) => {
         });
     }
 };
+

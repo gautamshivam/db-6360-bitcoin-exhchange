@@ -5,6 +5,9 @@ module.exports.findUserByIdSQL = (id) => {
 module.exports.findUserByEmailPwdSQL = (auth) => {
     return `select * from user where email='${auth.email}' and pwd='${auth.pwd}'`
 }
+module.exports.findUserByEmail = (email) => {
+    return `select * from user where email='${email}'`
+}
 
 module.exports.findAllClientsSQL = () => {
     return `select * from user 
@@ -86,3 +89,4 @@ module.exports.findAllBTCTradesTrader = (trader_id) => {
     r.fname as client_fname, r.lname as client_lname, r.email as client_email,  u2.fname as trader_fname, u2.lname as trader_lname, u2.email as trader_email
     from (select * from bitcoinTransactions, user u1 where bitcoinTransactions.client_id = u1.user_id and bitcoinTransactions.trader_id = ${trader_id}) r, user u2 where r.trader_id = u2.user_id`
 }
+
