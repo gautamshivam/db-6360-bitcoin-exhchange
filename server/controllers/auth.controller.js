@@ -32,5 +32,7 @@ exports.logout = (req, res) => {
 
 exports.user = (req, res) => {
     console.log("found user...", req.user)
-    res.send(req.user);
+    const user = req.user;
+    delete user['pwd']
+    res.send(user);
 }
