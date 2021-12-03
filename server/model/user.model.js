@@ -1,5 +1,6 @@
 const sql = require("../db");
 const query = require("../config/db.sql_query");
+const bcrypt = require('bcryptjs');
 
 // constructor
 const User = function(user) {
@@ -13,6 +14,7 @@ const User = function(user) {
 };
 
 User.create = (newUser, result) => {
+    newUser.pwd = bcrypt.hashSync(newUser.pwd, 10);
     sql.query("INSERT INTO user SET ?", newUser, (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -46,7 +48,7 @@ User.findOne = (id, result) => {
       return;
     }
     console.log("users: ", res);
-    result(null, res);
+    result(null, res[0]);
 
   });
 }
