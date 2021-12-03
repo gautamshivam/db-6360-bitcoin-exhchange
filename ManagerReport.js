@@ -1,6 +1,6 @@
-    import React, { Component} from 'react'
-    import {Form, Table} from 'react-bootstrap'
-
+import React, { Component} from 'react'
+import {Form, Table} from 'react-bootstrap'
+import './ManagerReport.css'
 
     class ManagerReport extends Component {
     constructor(props){
@@ -108,7 +108,6 @@
     render() {
         return (
         <div>
-            <h1>Manager Interface</h1>
         <Form onSubmit={this.handleSubmit}>
             <br/>
             <h3>Enter duration length of the transaction(Monthly, Weekly, Daily)</h3>
@@ -121,38 +120,39 @@
             </select>
             <br/>
             <label>
-                            Enter start date:(in YYYY-MM-DD format) <br/>
+                            Enter a date:(in YYYY-MM-DD format) <br/>
                             <input type="text" value={this.state.start_date} onChange={this.handleStartDate} />
                     </label><br/>
                         <br/>   
                             <input type="button" value="Submit form"  onClick={this.handleSubmit}/>
 
             </Form>    
-            <div className="table">
+        <div className="table">
         <h2>Transactions</h2> 
         
-        <Table border='2'>
+        <table id="ManagerReport">
         <thead>
         <tr>
-        <td>TID</td>
-        <td>Client Id</td>
-        <td>Trader Id</td>
-        <td>BTC Quantity</td>
-        <td>BTC Rate</td>
-        <td>Transaction Type</td>
-        <td>Commission Type</td>
-        <td>Commission Value</td>
-        <td>Timestamp</td>
-        <td> Client First Name</td>
-        <td> Client Last Name</td>
-        <td> Client email</td>
-        <td> Trader First Name</td>
-        <td>Trader Last Name </td>
-        <td> Trader Email</td>
+        <th>TID</th>
+        <th>Client Id</th>
+        <th>Trader Id</th>
+        <th>BTC Quantity</th>
+        <th>BTC Rate</th>
+        <th>Transaction Type</th>
+        <th>Commission Type</th>
+        <th>Commission Value</th>
+        <th>Timestamp</th>
+        <th> Client First Name</th>
+        <th> Client Last Name</th>
+        <th> Client email</th>
+        <th> Trader First Name</th>
+        <th>Trader Last Name </th>
+        <th> Trader Email</th>
         </tr>
         </thead>
         <tbody>
         { 
+            //this.state.customers.filter((customers) => new Date(customers.timestamp).getTime()>=start_date.getTime() && new Date(customers.timestamp).getTime()<=week_end_date.getTime()).
             this.state.result.map(result => 
             <tr key={result.tid}>
             <td>{result.tid}</td>
@@ -175,7 +175,7 @@
         }
         
         </tbody>
-        </Table>
+        </table>
         </div>
         <h5>Total Number of Transactions: {this.state.count}</h5>
         </div>
