@@ -14,6 +14,32 @@ CREATE TABLE user(
     pwd VARCHAR(200)
 );
 
+
+-- table client 
+
+CREATE TABLE client(
+	client_id INTEGER PRIMARY KEY,
+    bitcoin_balance REAL,
+    fiat_balance REAL,
+    membership_level VARCHAR(10) default 'SILVER',  -- GOLD, SILVER
+    
+    FOREIGN KEY (client_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+
+-- trigger insertIntoClient
+Delimiter //
+create trigger insertIntoClient AFTER INSERT ON user
+for each row
+BEGIN
+	IF EXISTS(SELECT user_id FROM user WHERE user_id=NEW.user_id AND user_type='CLIENT') THEN
+	INSERT INTO  client(client_id, bitcoin_balance, fiat_balance, membership_level) VALUES(NEW.user_id, 0.00, 0.00,'SILVER');
+    END IF;
+END;//
+delimiter ;
+
+
+
 -- insert user into user table
 
 INSERT INTO user (fname, lname, phone, cell_number, user_type, email, pwd) 
@@ -62,19 +88,6 @@ VALUES
 	(9,'street c4','city c4','state c4','44444'),
 	(10,'street c5','city c5','state c5','55555');
     
-
--- table client 
-
-CREATE TABLE client(
-	client_id INTEGER PRIMARY KEY,
-    bitcoin_balance REAL,
-    fiat_balance REAL,
-    membership_level VARCHAR(10) default 'SILVER',  -- GOLD, SILVER
-    
-    FOREIGN KEY (client_id) REFERENCES user(user_id) ON DELETE CASCADE
-);
-
-
 -- table clientTraderInfo 
 
 CREATE TABLE clientTraderInfo(
@@ -112,42 +125,8 @@ CREATE TABLE bankTransactions(
     FOREIGN KEY (trader_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
--- insert into clientTraderInfo
-
-INSERT INTO bankTransactions (client_id, trader_id, amount, type, timestamp, status)
-VALUES
-	(6, null, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(6, 2, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(7, 2, 1000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(8, 2, 4000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(9, 3, 3000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED');
-
-    
--- table bitcoinTransactions
-
-CREATE TABLE bitcoinTransactions(
-	tid integer UNIQUE NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    client_id INTEGER,
-    trader_id INTEGER NULL,
-    btc_qty REAL,
-    btc_rate REAL,
-	transaction_value REAL,
-    transaction_type VARCHAR(10), -- BUY, SELL
-    commission_type VARCHAR(10), -- FIAT, BTC
-    commission_value REAL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (client_id) REFERENCES user(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (trader_id) REFERENCES user(user_id) ON DELETE CASCADE
-);
-    
--- INSERT QUERYs for bitcoinTransactions
-INSERT INTO bitcoinTransactions (client_id, trader_id, btc_qty, btc_rate, transaction_value, transaction_type,commission_type,commission_value,timestamp)
-VALUES (8, null , 2, 1000, 2005, 'BUY','USD', 5, CURRENT_TIMESTAMP );
 
 -- defining trigger updateClientTraderInfo
-
-
 Delimiter //
 create trigger updateClientTraderInfo BEFORE INSERT ON bankTransactions
 for each row
@@ -207,14 +186,95 @@ END;//
 delimiter ;
 
 
--- trigger insertIntoClient
+-- insert into bankTransactions
+
+INSERT INTO bankTransactions (client_id, trader_id, amount, type, timestamp, status)
+VALUES
+	(6, null, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
+	(6, 2, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
+	(7, 2, 1000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
+	(8, 2, 4000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
+	(9, 3, 3000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED');
+
+   
+-- table bitcoinTransactions
+
+CREATE TABLE bitcoinTransactions(
+	tid integer UNIQUE NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    client_id INTEGER,
+    trader_id INTEGER NULL,
+    btc_qty REAL,
+    btc_rate REAL,
+	transaction_value REAL,
+    transaction_type VARCHAR(10), -- BUY, SELL
+    commission_type VARCHAR(10), -- FIAT, BTC
+    commission_value REAL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (client_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (trader_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+    
+
+-- trigger updateClientTraderInfoOnBtcTxn
 Delimiter //
-create trigger insertIntoClient AFTER INSERT ON user
+create trigger updateClientTraderInfoOnBtcTxn BEFORE INSERT ON bitcoinTransactions
 for each row
 BEGIN
-	IF EXISTS(SELECT user_id FROM user WHERE user_id=NEW.user_id AND user_type='CLIENT') THEN
-	INSERT INTO  client(client_id, bitcoin_balance, fiat_balance, membership_level) VALUES(NEW.user_id, 0.00, 0.00,'SILVER');
+
+	IF (NEW.trader_id is null) THEN
+    BEGIN
+		IF NEW.transaction_type = 'BUY'  THEN 
+			IF ((select fiat_balance from client where client_id= NEW.client_id) - NEW.transaction_value)>=0 THEN
+				UPDATE client set fiat_balance=(fiat_balance - NEW.transaction_value), bitcoin_balance=(bitcoin_balance+ NEW.btc_qty) where client_id= NEW.client_id;
+			ELSE
+            BEGIN
+				signal sqlstate '45000' set message_text = 'not enough balance';
+			END;
+            END IF;
+		END IF;
+        
+        IF NEW.transaction_type = 'SELL'  THEN 
+			IF ((select bitcoin_balance from client where client_id= NEW.client_id) - NEW.btc_qty)>=0 THEN
+				UPDATE client set fiat_balance=(fiat_balance + NEW.transaction_value), bitcoin_balance=bitcoin_balance- NEW.btc_qty where client_id= NEW.client_id;
+			ELSE
+            BEGIN
+				signal sqlstate '45000' set message_text = 'not enough bitcoin to sell';
+			END;
+            END IF;
+		END IF;
+	END;
+    ELSE 
+    BEGIN
+		IF NEW.transaction_type = 'BUY' THEN 
+			IF ((select fiat_balance from clientTraderInfo where client_id= NEW.client_id AND trader_id= NEW.trader_id) - NEW.transaction_value)>=0 THEN
+				UPDATE clientTraderInfo set fiat_balance=(fiat_balance - NEW.transaction_value), bitcoin_balance=bitcoin_balance+ NEW.btc_qty where client_id= NEW.client_id AND trader_id= NEW.trader_id;
+			ELSE
+            BEGIN
+				signal sqlstate '45000' set message_text = 'not enough balance';
+			END;
+            END IF;
+		END IF;
+        
+        IF NEW.transaction_type = 'SELL' THEN 
+			IF ((select bitcoin_balance from clientTraderInfo where client_id= NEW.client_id AND trader_id= NEW.trader_id) - NEW.btc_qty)>=0 THEN
+				UPDATE clientTraderInfo set fiat_balance=(fiat_balance + NEW.transaction_value), bitcoin_balance=bitcoin_balance-NEW.btc_qty where client_id= NEW.client_id AND trader_id= NEW.trader_id;
+			ELSE
+            BEGIN
+				signal sqlstate '45000' set message_text = 'not enough bit coins to sell';
+			END;
+            END IF;
+		END IF;
+    END;
     END IF;
 END;//
 delimiter ;
 
+
+
+
+-- INSERT QUERYs for bitcoinTransactions
+-- INSERT INTO bitcoinTransactions (client_id, trader_id, btc_qty, btc_rate, transaction_value, transaction_type,commission_type,commission_value,timestamp)
+-- VALUES 
+-- (6, null , 2, 1000, 3000, 'BUY','FIAT', 1000, CURRENT_TIMESTAMP ),
+-- (6, null , 1, 1000, 2000, 'BUY','FIAT', 1000, CURRENT_TIMESTAMP );
