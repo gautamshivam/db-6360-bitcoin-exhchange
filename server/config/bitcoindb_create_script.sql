@@ -44,21 +44,21 @@ delimiter ;
 
 INSERT INTO user (fname, lname, phone, cell_number, user_type, email, pwd) 
 VALUES 
-	('shivam','gautam','1234567890','','MANAGER','sg@gmail.com','1234'),
-	('sourabh','tantutway','1111111111','','TRADER','st@gmail.com','1234'),
-	('srushti','sachdev','2222222222','','TRADER','ss@gmail.com','1234'),
-	('harika','nittala','3333333333','','TRADER','hn@gmail.com','1234'),
-	('deepak','honakeri','4444444444','','TRADER','dh@gmail.com','1234');
+	('shivam','gautam','1234567890','','MANAGER','sg@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('sourabh','tantutway','1111111111','','TRADER','st@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('srushti','sachdev','2222222222','','TRADER','ss@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('harika','nittala','3333333333','','TRADER','hn@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('deepak','honakeri','4444444444','','TRADER','dh@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW');
 
 -- insert client users
 
 INSERT INTO user (fname, lname, phone, cell_number, user_type, email, pwd) 
 VALUES 
-	('client1','c1_lastname','1111111111','', 'CLIENT','c1@gmail.com','1234'),
-	('client2','c2_lastname','2222222222','', 'CLIENT','c2@gmail.com','1234'),
-	('client3','c3_lastname','3333333333','', 'CLIENT','c3@gmail.com','1234'),
-	('client4','c4_lastname','4444444444','', 'CLIENT','c4@gmail.com','1234'),
-	('client5','c5_lastname','5555555555','', 'CLIENT','c5@gmail.com','1234');
+	('client1','c1_lastname','1111111111','', 'CLIENT','c1@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('client2','c2_lastname','2222222222','', 'CLIENT','c2@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('client3','c3_lastname','3333333333','', 'CLIENT','c3@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('client4','c4_lastname','4444444444','', 'CLIENT','c4@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('client5','c5_lastname','5555555555','', 'CLIENT','c5@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW');
 
 
 -- table address
@@ -139,46 +139,6 @@ BEGIN
 			ELSE
 				INSERT INTO client(client_id, bitcoin_balance, fiat_balance, membership_level) VALUES (NEW.client_id, 0.00, NEW.amount,'SILVER');
             END IF;
-		ELSE
-			BEGIN
-				IF EXISTS(select trader_id from clientTraderInfo where client_id= NEW.client_id and trader_id = NEW.trader_id ) THEN
-					UPDATE clientTraderInfo set fiat_balance=(fiat_balance + NEW.amount) where client_id= NEW.client_id and trader_id = NEW.trader_id;
-				ELSE
-					INSERT INTO clientTraderInfo (trader_id, client_id, bitcoin_balance, fiat_balance) values (NEW.trader_id,NEW.client_id ,0,NEW.amount);
-				END IF;
-			END;    
-		END IF;
-	END;
-	ELSE
-    BEGIN
-		IF (NEW.trader_id is null) THEN
-		BEGIN	
-			IF ((select fiat_balance from client where client_id= NEW.client_id) - NEW.amount)>=0 THEN
-				UPDATE client set fiat_balance=(fiat_balance - NEW.amount) where client_id= NEW.client_id;
-			ELSE
-            BEGIN
-				-- INSERT INTO bankTransactions (client_id, trader_id, amount, type, timestamp, status)
-				-- VALUES (NEW.client_id, null, NEW.amount, 'WITHDRAW', CURRENT_TIMESTAMP, 'FAILED');
-				signal sqlstate '45000' set message_text = 'not enough balance';
-			END;
-            END IF;
-		END;
-        ELSE
-			BEGIN
-				IF EXISTS(select trader_id from clientTraderInfo where client_id= NEW.client_id and trader_id = NEW.trader_id ) THEN
-                BEGIN
-					IF ((select fiat_balance from clientTraderInfo where client_id= NEW.client_id and trader_id = NEW.trader_id ) - NEW.amount)>=0 THEN
-						UPDATE clientTraderInfo set fiat_balance=(fiat_balance - NEW.amount) where client_id= NEW.client_id and trader_id = NEW.trader_id;
-					ELSE
-                    BEGIN
-						-- INSERT INTO bankTransactions (client_id, trader_id, amount, type, timestamp, status)
-						-- VALUES (NEW.client_id, NEW.trader_id, NEW.amount, 'WITHDRAW', CURRENT_TIMESTAMP, 'FAILED');
-						signal sqlstate '45000' set message_text = 'not enough balance';
-					END;
-                    END IF;
-                END;
-                END IF;
-			END;    
 		END IF;
 	END;
     END IF;
@@ -191,10 +151,10 @@ delimiter ;
 INSERT INTO bankTransactions (client_id, trader_id, amount, type, timestamp, status)
 VALUES
 	(6, null, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(6, 2, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(7, 2, 1000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(8, 2, 4000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(9, 3, 3000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED');
+	(6, 2, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
+	(7, 2, 1000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
+	(8, 2, 4000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
+	(9, 3, 3000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING');
 
    
 -- table bitcoinTransactions
@@ -270,7 +230,18 @@ BEGIN
 END;//
 delimiter ;
 
-
+-- defining trigger statusUpdClientTraderInfo
+Delimiter //
+create trigger statusUpdClientTraderInfo BEFORE UPDATE ON bankTransactions
+for each row
+BEGIN
+	IF OLD.STATUS = 'PENDING' AND NEW.status='APPROVED' THEN
+		BEGIN
+			UPDATE clientTraderInfo set fiat_balance=(fiat_balance + NEW.amount) where client_id= NEW.client_id and trader_id = NEW.trader_id;
+		END;
+    END IF;
+END;//
+delimiter ;
 
 
 -- INSERT QUERYs for bitcoinTransactions
