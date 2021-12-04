@@ -104,6 +104,18 @@ bank.makeBankTransaction = (bankTransaction, result) => {
   
 }
 
+bank.updateTxnStatus = (txnId, txnStatus, result) => {
+  sql.query(query.updateTxnStatus(txnId, txnStatus), (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+    console.log("updated transaction status: ");
+    result(null, { "msg": "updated status successfully" });
+  });
+}
+
 function checkBalance(transaction, availableBalance) {
   if(transaction.client_id != null && transaction.trader_id !=null) {
       sql.query(query.findOneClientForTraderSQL(transaction.trader_id, 

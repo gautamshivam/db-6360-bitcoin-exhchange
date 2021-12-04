@@ -10,4 +10,7 @@ module.exports = app => {
     // make withdrawal transaction
     app.post("/bank/withdraw", bank.withdraw);
 
+    // confirm/cancel pending txn
+    app.put("/bank/:id", bank.update);
+
 }

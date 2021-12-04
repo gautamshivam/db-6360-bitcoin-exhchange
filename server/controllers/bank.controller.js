@@ -94,3 +94,33 @@ exports.withdraw = (req, res) => {
     }
 };
 
+exports.update = (req, res) => {
+    // Validate request
+    if (!req.body) {
+        res.status(400).send({
+        message: "Content can not be empty!"
+        });
+        return;
+    }
+    
+    const status = req.body.status;
+    const txnId = req.params.id;
+
+    if(status !== "APPROVED" && status !== "CANCEL") {
+        res.status(400).send({
+            message: "Wrong status, only APPROVED, CANCEL allowed"
+        });
+        return;
+    }
+    
+    // withdraw money for client
+    bank.updateTxnStatus(txnId, status, (err, data) => {
+        if (err) res.status(500).send({
+            message:
+            err.message || "Some error occurred while creating the Customer."
+        });
+        else res.send(data);
+    });
+
+}
+

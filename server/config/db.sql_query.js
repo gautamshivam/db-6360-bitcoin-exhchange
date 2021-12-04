@@ -48,6 +48,10 @@ module.exports.findAllBankTransactions = () => {
     from (select * from bankTransactions, user u1 where bankTransactions.client_id = u1.user_id) r left join user u2 on  r.trader_id = u2.user_id`
 }
 
+module.exports.updateTxnStatus = (id, txnStatus) => {
+    return `UPDATE bankTransactions SET status='${txnStatus}' WHERE tid=${id}`
+}
+
 module.exports.findAllBankTransactionsClientTrader = (client_id, trader_id) => {
     return `select tid, client_id, trader_id, amount, type, timestamp, status, 
     r.fname as client_fname, r.lname as client_lname, r.email as client_email,  u2.fname as trader_fname, u2.lname as trader_lname, u2.email as trader_email 
