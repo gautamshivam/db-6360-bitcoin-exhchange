@@ -1,5 +1,5 @@
 
-
+use bitcoindb;
 drop table  IF EXISTS address;
 drop table  IF EXISTS  clientTraderInfo;
 drop table  IF EXISTS bankTransactions;
