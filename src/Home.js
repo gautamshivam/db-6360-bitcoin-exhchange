@@ -1,14 +1,21 @@
-import React from 'react'
-import Button from './Button'
+import { Typography } from '@mui/material'
+import React, {useContext, useState} from 'react'
+import { UserContext } from './UserProvider'
+import DashboardClient from './components/client/DashboardClient'
+
+
+
 function Home(){
-    const onClick=()=>{
-        console.log('click')
-    }
+    const {user} = useContext(UserContext)
+    
     return (
-        <div>
-            <Button text='Log In' onClick={onClick}/>
-            <Button text="register" onClick={onClick}/>
-            <h1>Welcome to Bitcoin transaction System</h1>
+        <div class="row">
+            <div class="col-12 my-3">
+                { user && <h1>Welcome {user.fname}</h1>}
+            </div>
+            {
+                user.user_type === "CLIENT" && <DashboardClient/>
+            }
         </div>
     )
 }
