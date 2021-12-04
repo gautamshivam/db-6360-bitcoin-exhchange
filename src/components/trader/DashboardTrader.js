@@ -13,10 +13,17 @@ const DashboardTrader = () => {
         navigate('/trader-report');
     }
 
+    const showAllClients = () => {
+        navigate('/all-clients');
+    }
+
     return (
         <div>
             <div class="col-12">
                 <Typography>
+                    <Button  variant='contained' 
+                    style={{marginRight:"10px"}}
+                    onClick={showAllClients}>All Clients</Button>
                     <Button  variant='contained' 
                     style={{marginRight:"10px"}}
                     onClick={() => setShowBuy(true)}>Buy BTC</Button>
