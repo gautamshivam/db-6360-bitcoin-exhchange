@@ -18,7 +18,6 @@ const ClientTraderReport = (props) => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Trader Name</TableCell>
-                                <TableCell align="left">Trader's Last Name</TableCell>
                                 <TableCell align="left">Trader's Email</TableCell>
                                 <TableCell align="left">FIAT Balance</TableCell>
                                 <TableCell align="left">BTC Balance</TableCell>
@@ -29,8 +28,7 @@ const ClientTraderReport = (props) => {
                                 props.report.map((item) => (
                                     <TableRow key={item.trader_id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
-                                        <TableCell align="left" style={{ fontSize:'18px'}}>{item.fname}</TableCell>
-                                        <TableCell align="left" style={{ fontSize:'18px'}}>{item.lname}</TableCell>
+                                        <TableCell align="left" style={{ fontSize:'18px'}}>{item.fname} {item.lname}</TableCell>
                                         <TableCell align="left" style={{ fontSize:'18px'}}>{item.email}</TableCell>
                                         <TableCell align="left" style={{ fontSize:'18px'}}>${item.fiat_balance}</TableCell>
                                         <TableCell align="left" style={{ fontSize:'18px'}}>{item.bitcoin_balance}</TableCell>

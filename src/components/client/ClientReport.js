@@ -45,17 +45,17 @@ const ClientReport = () => {
         Axios.get(`/clients/${user.user_id}/traders`)
         .then((res) => {
             console.log("client report",res.data);
-            if(Array.isArray(res.data))setReport(res.data)
+            if(Array.isArray(res.data))setReport(res.data.reverse())
         });
         Axios.get(`/bank?client_id=${user.user_id}`)
         .then((res) => {
             console.log("client's bank report",res.data);
-            if(Array.isArray(res.data))setBankReport(res.data)
+            if(Array.isArray(res.data))setBankReport(res.data.reverse())
         });
         Axios.get(`/btc/trade?client_id=${user.user_id}`)
         .then((res) => {
             console.log("client's btc report",res.data);
-            if(Array.isArray(res.data))setBTCReport(res.data)
+            if(Array.isArray(res.data))setBTCReport(res.data.reverse())
         });
     }
     const handleChange = (event, newValue) => {
@@ -75,18 +75,15 @@ const ClientReport = () => {
                 
             </Box>
             <TabPanel value={value} index={0}>
-                <ClientTraderReport report={report.reverse()}/>
+                <ClientTraderReport report={report}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <ClientBankReport report={bankReport.reverse()}/>
+                <ClientBankReport report={bankReport}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <ClientBTCReport report={btcReport.reverse()}/>
+                <ClientBTCReport report={btcReport}/>
             </TabPanel>
         </>
-        
-  
-       
     )
 }
 
