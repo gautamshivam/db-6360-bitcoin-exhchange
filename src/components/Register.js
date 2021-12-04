@@ -45,7 +45,7 @@ const Register = () => {
             if(res.data.email !== undefined) {
                 //navigate('/login');  
                 setIsError(false);
-                setMsg(`Successfully registered, login with username: ${res.data.username}`);
+                setMsg(`Successfully registered, login with username: ${res.data.email}`);
 
             } else {
                 setIsError(true);
