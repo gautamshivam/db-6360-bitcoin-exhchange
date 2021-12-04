@@ -4,10 +4,11 @@ import ClientDeposit from './ClientDeposit';
 import ClientBuyBtc from './ClientBuyBtc';
 import ClientSellBtc from './ClientSellBtc';
 import { Divider, Typography } from '@mui/material'
+import { useNavigate } from 'react-router';
 
 const DashboardClient = () => {
-    const [showBuy, setShowBuy] = useState(true)
-
+    const [showBuy, setShowBuy] = useState(true);
+    let navigate = useNavigate();
     return (
         <div>
             <div class="col-12">
@@ -18,6 +19,9 @@ const DashboardClient = () => {
                     <Button  variant='contained' color="warning" 
                     style={{marginRight:"10px"}}
                     onClick={() => setShowBuy(false)}>Sell BTC</Button>
+                    <Button  variant='contained'
+                    style={{marginRight:"10px"}}
+                    onClick={() => navigate('/client-report')}>Show Report</Button>
                 </Typography> 
             </div>
             <Divider style={{marginTop:"10px"}}/>
