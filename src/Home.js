@@ -3,6 +3,7 @@ import React, {useContext, useState} from 'react'
 import { UserContext } from './UserProvider'
 import DashboardClient from './components/client/DashboardClient'
 import DashboardTrader from './components/trader/DashboardTrader'
+import DashboardManager from './components/manager/DashboardManager'
 
 
 
@@ -19,6 +20,9 @@ function Home(){
             }
             {
                 user.user_type === "TRADER" && <DashboardTrader/>
+            }
+            {
+                user.user_type === "MANAGER" && <DashboardManager/>
             }
         </div>
     )
