@@ -3,8 +3,8 @@ const bank = require("../model/bank.model.js");
 
 // Find all transactions
 exports.getAll = (req, res) => {
-    client_id = req.query.client_id;
-    trader_id = req.query.trader_id;
+    const client_id = req.query.client_id;
+    const trader_id = req.query.trader_id;
     bank.getAll({client_id:client_id, trader_id:trader_id},(err, data) => {
          if (err)
              res.status(500).send({
@@ -31,11 +31,15 @@ exports.deposit = (req, res) => {
         amount: req.body.amount,
     });
 
-    if (deposit.client_id == null && deposit.trader_id == null) {
+    if(deposit.client_id == null) {
         res.status(400).send({
-            message: "client id or trader id required."
+            message: "client id required."
         });
-    }else if (deposit.amount < 0) {
+    }
+    if(deposit.trader_id != null && deposit.trader_id > 0 ) {
+        deposit.status = "PENDING"
+    }
+    if (deposit.amount < 0) {
         res.status(400).send({
             message: "amount must be greater than 0."
         });

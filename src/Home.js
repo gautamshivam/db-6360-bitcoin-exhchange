@@ -1,15 +1,18 @@
-import { Typography } from '@mui/material'
-import React, {useContext, useState} from 'react'
+import React, {useContext, useEffect} from 'react'
 import { UserContext } from './UserProvider'
 import DashboardClient from './components/client/DashboardClient'
 import DashboardTrader from './components/trader/DashboardTrader'
 import DashboardManager from './components/manager/DashboardManager'
 
-
+import Axios from 'axios'
 
 function Home(){
-    const {user} = useContext(UserContext)
+    const {user, setClients, setTraders} = useContext(UserContext)
     
+    useEffect(() => {
+        Axios.get("/clients").then((res) => setClients(res.data))
+        Axios.get("/traders").then((res) => setTraders(res.data))
+    }, [])
     return (
         <div class="row">
             <div class="col-12 my-3">

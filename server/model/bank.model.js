@@ -72,7 +72,7 @@ bank.getAll = (queryParams,result) => {
 }
 
 bank.makeBankTransaction = (bankTransaction, result) => {
-  if(bankTransaction.type == 'WITHDRAW'){
+  if(bankTransaction.type === 'WITHDRAW'){
     checkBalance(bankTransaction, (balance) => {
       console.log(`available balance: ${balance}`);
       if(balance < bankTransaction.amount && false) {
