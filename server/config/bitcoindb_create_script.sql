@@ -1,4 +1,5 @@
 -- bitcoin database
+
 use bitcoindb;
 
 -- table user
@@ -45,7 +46,7 @@ delimiter ;
 INSERT INTO user (fname, lname, phone, cell_number, user_type, email, pwd) 
 VALUES 
 	('shivam','gautam','1234567890','','MANAGER','sg@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
-	('sourabh','tantutway','1111111111','','TRADER','st@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
+	('sourabh','tantuway','1111111111','','TRADER','st@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
 	('srushti','sachdev','2222222222','','TRADER','ss@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
 	('harika','nittala','3333333333','','TRADER','hn@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW'),
 	('deepak','honakeri','4444444444','','TRADER','dh@gmail.com','$2a$10$e7HYfyErebATy6QSDU/zLucOAjyh8LHg2/QVhw5fmhdM3EiZYrzrW');
@@ -101,13 +102,12 @@ CREATE TABLE clientTraderInfo(
     FOREIGN KEY (trader_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
-INSERT INTO  clientTraderInfo(trader_id, client_id, bitcoin_balance, fiat_balance)
-VALUES
-	(2,6, 0.00, 2000.00),
-	(2,7, 0.00, 1000.00),
-	(2,8, 0.00, 4000.00),
-	(3,9, 0.00, 3000.00),
-	(3,10, 0.00, 0.00);
+-- INSERT INTO  clientTraderInfo(trader_id, client_id, bitcoin_balance, fiat_balance)
+-- VALUES
+-- (2,6, 0.00, 2000.00),
+-- (2,7, 0.00, 1000.00),(2,8, 0.00, 4000.00),
+-- (3,9, 0.00, 3000.00),
+-- (3,10, 0.00, 0.00);
     
     
 -- table bankTransactions
@@ -148,13 +148,12 @@ delimiter ;
 
 -- insert into bankTransactions
 
-INSERT INTO bankTransactions (client_id, trader_id, amount, type, timestamp, status)
-VALUES
-	(6, null, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
-	(6, 2, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
-	(7, 2, 1000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
-	(8, 2, 4000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
-	(9, 3, 3000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING');
+-- INSERT INTO bankTransactions (client_id, trader_id, amount, type, timestamp, status)
+-- VALUES (6, null, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'APPROVED'),
+-- (6, 2, 2000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
+-- (7, 2, 1000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
+-- (8, 2, 4000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING'),
+-- (9, 3, 3000, 'DEPOSIT', CURRENT_TIMESTAMP, 'PENDING');
 
    
 -- table bitcoinTransactions
@@ -237,8 +236,12 @@ for each row
 BEGIN
 	IF OLD.STATUS = 'PENDING' AND NEW.status='APPROVED' THEN
 		BEGIN
-			UPDATE clientTraderInfo set fiat_balance=(fiat_balance + NEW.amount) where client_id= NEW.client_id and trader_id = NEW.trader_id;
-		END;
+			IF EXISTS(select trader_id from clientTraderInfo where client_id= NEW.client_id and trader_id=NEW.trader_id ) THEN
+				UPDATE clientTraderInfo set fiat_balance=(fiat_balance + NEW.amount) where client_id= NEW.client_id and trader_id = NEW.trader_id;
+			ELSE
+				INSERT INTO  clientTraderInfo(trader_id, client_id, bitcoin_balance, fiat_balance) VALUES (NEW.trader_id,NEW.client_id, 0.00,NEW.amount);
+            END IF;
+        END;
     END IF;
 END;//
 delimiter ;
