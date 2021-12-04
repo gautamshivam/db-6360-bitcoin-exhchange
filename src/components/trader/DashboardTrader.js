@@ -1,12 +1,17 @@
 import React, { useState} from 'react'
 import Button from '@mui/material/Button';
-import ClientDeposit from './ClientDeposit';
-import ClientBuyBtc from './ClientBuyBtc';
-import ClientSellBtc from './ClientSellBtc';
+import TraderBuyBtc from './TraderBuyBtc';
+import TraderSellBtc from './TraderSellBtc';
 import { Divider, Typography } from '@mui/material'
+import { useNavigate } from 'react-router';
 
-const DashboardClient = () => {
+const DashboardTrader = () => {
     const [showBuy, setShowBuy] = useState(true)
+    let navigate = useNavigate();
+
+    const showReport = () => {
+        navigate('/trader-report');
+    }
 
     return (
         <div>
@@ -18,23 +23,23 @@ const DashboardClient = () => {
                     <Button  variant='contained' color="warning" 
                     style={{marginRight:"10px"}}
                     onClick={() => setShowBuy(false)}>Sell BTC</Button>
+                    <Button  variant='contained'
+                    style={{marginRight:"10px"}}
+                    onClick={showReport}>Show Report</Button>
                 </Typography> 
             </div>
             <Divider style={{marginTop:"10px"}}/>
             <div class="row mt-5">
-                <div class="col-md-2">
+                <div class="col-md-3">
                 </div>
-                <div class="col-md-4">
-                    <ClientDeposit/>
+                <div class="col-md-6">
+                    {showBuy ? <TraderBuyBtc title="Buy BTC"/> : <TraderSellBtc title="Sell BTC"/>}
                 </div>
-                <div class="col-md-4">
-                    {showBuy ? <ClientBuyBtc title="Buy BTC"/> : <ClientSellBtc title="Sell BTC"/>}
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                 </div>
             </div>
         </div>
     )
 }
 
-export default DashboardClient
+export default DashboardTrader

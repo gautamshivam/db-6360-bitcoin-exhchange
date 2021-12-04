@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Navbar from './components/Navbar';
 import Profile from './components/Profile';
+import TraderReport from './components/trader/TraderReport';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route exact path="/login" element={<Login/>}/>
         <Route exact path="/register" element={<Register/>}/>
         <Route exact path="/profile" element={<Profile/>}/>
+        <Route exact path="/trader-report" element={<TraderReport/>}/>
         <Route exact path="/dashboard_client" element={<Dashboard_client/>}/>
       </Routes>
     </div>
