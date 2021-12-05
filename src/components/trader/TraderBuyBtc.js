@@ -6,6 +6,7 @@ import Axios from 'axios';
 import { Typography } from '@mui/material'
 import { MenuItem } from '@mui/material';
 import { UserContext } from '../../UserProvider';
+import {useEffect} from 'react'
 
 
 const TraderBuyBtc = (props) => {
@@ -16,11 +17,26 @@ const TraderBuyBtc = (props) => {
     const [commissionType, setCommissionType] = useState("FIAT");
     const [commissionValue, setCommissionValue] = useState(0);
     const [totalTxnValue, setTotalTxnVal] = useState(0);
-    const [clientid, setClienID] = useState(6);
+    const [selectedClient, setSelectedClient] = useState();
+    const [clients, setAllclients] = useState([])
+    const [clientid, setClientID] = useState([])
+
+
+    useEffect(() => {
+        fetch(`/traders/${user.user_id}/clients`)
+        .then(res => res.json())
+        .then((data) => {
+            console.log('data fetched',data);
+            if(Array.isArray(data))setAllclients(data);
+        })
+        .catch(console.log)
+
+    }, [])
+
 
     const onBuy = () => {
         Axios.post("/btc/trade", {
-            client_id:clientid,
+            client_id:selectedClient,
             trader_id:user.user_id,
             btc_qty:quantity,
             btc_rate:btcRate,
@@ -57,10 +73,6 @@ const TraderBuyBtc = (props) => {
         }
     }
 
-    const onClientIDChange= (e)=> {
-    	setClienID(parseInt(e.target.value,10));
-    	console.log(e.target.value);
-    }
 
     return (
         <div>
@@ -68,12 +80,20 @@ const TraderBuyBtc = (props) => {
                 <Card variant="outlined">
                     <CardHeader title={props.title} titleTypographyProps={{variant:'h5', fontWeight:'bold' }}></CardHeader>
                     <CardContent>
-                        <TextField fullWidth id="standard-basic" 
-                            label="Client ID" 
+                            <TextField fullWidth id="standard-basic" 
+                            select
+                            label="Select Client" 
                             style={{marginTop:"5px", marginBottom:"5px"}}
-                            value={clientid}
-                            autoComplete='off'
-                            onChange={onClientIDChange} required="true" />
+                            value={selectedClient}
+                            onChange={(e) => setSelectedClient(e.target.value) } required="true" >
+                                {
+                                    clients.map((client) => (
+                                        <MenuItem key={client.client_id} value={client.client_id}>
+                                            {client.fname} {client.lname}
+                                        </MenuItem>
+                                    ))
+                                }
+                        </TextField>
                         <TextField fullWidth id="standard-basic" 
                         select
                         label="Commission Type" 
@@ -93,7 +113,7 @@ const TraderBuyBtc = (props) => {
                             value={quantity}
                             autoComplete='off'
                             onChange={onQtyChange} required="true" />
-                        <Button variant="contained" onClick={onBuy}>Buy For Client</Button>
+                        <Button variant="contained" onClick={onBuy} disabled={quantity < 5}>Buy For Client</Button>
                         <Typography marginTop="10px"> 
                             <b>BTC Rate: </b>{btcRate}
                         </Typography>
