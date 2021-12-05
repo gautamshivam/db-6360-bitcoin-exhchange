@@ -26,12 +26,15 @@ const DashboardClient = () => {
         <div>
             <div class="col-12">
                 <Typography>
-                    <Button  variant='contained' 
-                    style={{marginRight:"10px"}}
-                    onClick={() => setShowBuy(true)}>Buy BTC</Button>
-                    <Button  variant='contained' color="warning" 
-                    style={{marginRight:"10px"}}
-                    onClick={() => setShowBuy(false)}>Sell BTC</Button>
+
+                    {
+                        showBuy ?  <Button  variant='contained' color="warning" 
+                        style={{marginRight:"10px"}}
+                        onClick={() => setShowBuy(false)}>Sell BTC</Button> : 
+                        <Button  variant='contained' 
+                            style={{marginRight:"10px"}}
+                            onClick={() => setShowBuy(true)}>Buy BTC</Button>
+                    }
                     <Button  variant='contained'
                     style={{marginRight:"10px"}}
                     onClick={() => navigate('/client-report')}>Show Report</Button>

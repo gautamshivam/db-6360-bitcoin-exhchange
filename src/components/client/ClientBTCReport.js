@@ -48,8 +48,6 @@ const ClientBTCReport = (props) => {
                                                 return(<></>);
                                             }
                                         }
-                                        {let col = item.transaction_type === "buy" ? '#ffb0b0' : 'red'}
-
                                         return(
                                             <TableRow key={item.tid}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor:`${item.transaction_type === "BUY" ? '#d6ffe1' : '#ffb0b0'}`}}>
