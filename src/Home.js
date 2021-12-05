@@ -14,9 +14,9 @@ function Home(){
         Axios.get("/traders").then((res) => setTraders(res.data))
     }, [])
     return (
-        <div class="row">
+        <div class="row m-0">
             <div class="col-12 my-3">
-                { user && <h1>Welcome {user.fname}</h1>}
+                {/* { user && <h1>Welcome {user.fname}</h1>} */}
             </div>
             {
                 user.user_type === "CLIENT" && <DashboardClient/>
