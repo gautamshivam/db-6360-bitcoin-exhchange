@@ -11,7 +11,8 @@ import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-const ClientBTCReport = (props) => {
+
+const ManagerBTCReport = (props) => {
     const [showClientOnly, setShowClientOnly] = useState(false)
     const [showTraderOnly, setShowTraderOnly] = useState(false)
 
@@ -77,4 +78,4 @@ const ClientBTCReport = (props) => {
     )
 }
 
-export default ClientBTCReport
+export default ManagerBTCReport

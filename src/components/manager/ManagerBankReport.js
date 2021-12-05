@@ -7,36 +7,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from "@mui/material/Box";
-import Button from '@mui/material/Button';
-import Axios from 'axios';
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
-const TraderBankReport = (props) => {
-
-	const approveXact = (id) => {
-       Axios.put("/bank/"+id, {
-            status : "APPROVED"
-        }).then((res) => {
-            console.log("Transaction  Approved",res.data);
-            props.txnUpdated();
-        }).catch((err) => {
-            alert(err);
-        })
-    }
-	const cancelXact = (id) => {
-        Axios.put("/bank/"+id, {
-            status : "CANCEL"
-        }).then((res) => {
-            console.log("Transaction Cancelled",res.data);
-            props.txnUpdated()
-        }).catch((err) => {
-            alert(err);
-        })
-    }
-
+const ManagerBankReport = (props) => {
+    const [showClientOnly, setShowClientOnly] = useState(false)
+    const [showTraderOnly, setShowTraderOnly] = useState(false)
     return (
         <div className="row justify-content-center m-0">
             <div className="col-md-8 mt-5">
-
+                <FormGroup>
+                    <FormControlLabel control={<Switch onChange={(e,val) => setShowClientOnly(val)} />} label="Clients Only" />
+                    <FormControlLabel control={<Switch onChange={(e,val) => setShowTraderOnly(val)} />} label="Traders Only" />
+                </FormGroup>
                 <Box sx={{ boxShadow: 3, mb: 2 }}>
                     
                     <TableContainer component={Paper}>
@@ -45,31 +29,37 @@ const TraderBankReport = (props) => {
                                 <TableRow>
                                     <TableCell align="left">Row</TableCell>
                                     <TableCell align="left">Client's Name</TableCell>
+                                    {!showClientOnly && <TableCell align="left">Trader's Name</TableCell>}
                                     <TableCell align="left">Type</TableCell>
                                     <TableCell align="left">Amount</TableCell>
                                     <TableCell align="left">Status</TableCell>
                                     <TableCell align="left">Date</TableCell>
-                                    <TableCell align="left">Actions</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {
                                     props.report.map((item, idx) => {
+                                        if(!showClientOnly || !showTraderOnly){
+                                            if(showClientOnly && item.trader_id != null) {
+                                                return(<></>);
+                                            }
+                                            if(showTraderOnly && item.trader_id == null) {
+                                                return(<></>);
+                                            }
+                                        }
                                         if(item.status === "PENDING") {
                                             return(
                                             <TableRow key={item.tid}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 },backgroundColor:'#ffe1a1'}}>
                                                 <TableCell align="left" style={{ fontSize:'18px'}}>{idx+1}</TableCell>
                                                 <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
+                                                {
+                                                   !showClientOnly && <TableCell align="left" style={{ fontSize:'18px'}}>{item.trader_fname} {item.trader_lname}</TableCell>
+                                                }
                                                 <TableCell align="left" style={{ fontSize:'18px'}}>{item.type}</TableCell>
                                                 <TableCell align="left" style={{ fontSize:'18px'}}>${item.amount}</TableCell>
                                                 <TableCell align="left" style={{ fontSize:'18px'}}>{item.status}</TableCell>
                                                 <TableCell align="left" style={{ fontSize:'18px'}}>{new Date(item.timestamp).toDateString()}</TableCell>
-                                                <TableCell align="left" style={{ fontSize:'18px'}}>
-                                                        <Button variant="contained" style={{marginRight:"5px"}}
-                                                        onClick={() => approveXact(item.tid)}>Approve</Button>
-                                                        <Button onClick={() => cancelXact(item.tid)} variant="contained" color="warning">Decline</Button>
-                                                </TableCell>
                                             </TableRow>)
                                         }
                                         if (item.status === "APPROVED") {
@@ -78,11 +68,13 @@ const TraderBankReport = (props) => {
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor:'#d6ffe1'}}>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{idx+1}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
+                                                    {
+                                                        !showClientOnly && <TableCell align="left" style={{ fontSize:'18px'}}>{item.trader_fname} {item.trader_lname}</TableCell>
+                                                    }
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{item.type}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>${item.amount}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{item.status}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{new Date(item.timestamp).toDateString()}</TableCell>
-                                                    <TableCell align="left" style={{ fontSize:'18px'}}></TableCell>
                                                 </TableRow>)
                                         } 
                                         if (item.status === "CANCEL") {
@@ -91,12 +83,12 @@ const TraderBankReport = (props) => {
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor:'#ffb0b0'}}>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{idx+1}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
-                                                    <TableCell align="left" style={{ fontSize:'18px'}}>{item.type}</TableCell>
+                                                    {
+                                                        !showClientOnly && <TableCell align="left" style={{ fontSize:'18px'}}>{item.trader_fname} {item.trader_lname}</TableCell>
+                                                    }                                                    <TableCell align="left" style={{ fontSize:'18px'}}>{item.type}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>${item.amount}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{item.status}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{new Date(item.timestamp).toDateString()}</TableCell>
-                                                    <TableCell align="left" style={{ fontSize:'18px'}}></TableCell>
-
                                                 </TableRow>)
                                         } 
                                         
@@ -111,4 +103,4 @@ const TraderBankReport = (props) => {
     )
 }
 
-export default TraderBankReport
+export default ManagerBankReport

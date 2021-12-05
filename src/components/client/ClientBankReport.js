@@ -26,6 +26,7 @@ const ClientBankReport = (props) => {
                         <Table aria-label="client report table">
                             <TableHead>
                                 <TableRow>
+                                    <TableCell align="left">Row</TableCell>
                                     <TableCell align="left">Client's Name</TableCell>
                                     {!showClientOnly && <TableCell align="left">Trader's Name</TableCell>}
                                     <TableCell align="left">Type</TableCell>
@@ -36,7 +37,7 @@ const ClientBankReport = (props) => {
                             </TableHead>
                             <TableBody>
                                 {
-                                    props.report.map((item) => {
+                                    props.report.map((item, idx) => {
                                         if(!showClientOnly || !showTraderOnly){
                                             if(showClientOnly && item.trader_id != null) {
                                                 return(<></>);
@@ -49,6 +50,7 @@ const ClientBankReport = (props) => {
                                             return(
                                             <TableRow key={item.tid}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 },backgroundColor:'#ffe1a1'}}>
+                                                <TableCell align="left" style={{ fontSize:'18px'}}>{idx+1}</TableCell>
                                                 <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
                                                 {
                                                    !showClientOnly && <TableCell align="left" style={{ fontSize:'18px'}}>{item.trader_fname} {item.trader_lname}</TableCell>
@@ -63,6 +65,7 @@ const ClientBankReport = (props) => {
                                             return(
                                                 <TableRow key={item.tid}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor:'#d6ffe1'}}>
+                                                    <TableCell align="left" style={{ fontSize:'18px'}}>{idx+1}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
                                                     {
                                                         !showClientOnly && <TableCell align="left" style={{ fontSize:'18px'}}>{item.trader_fname} {item.trader_lname}</TableCell>
@@ -77,6 +80,7 @@ const ClientBankReport = (props) => {
                                             return(
                                                 <TableRow key={item.tid}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor:'#ffb0b0'}}>
+                                                    <TableCell align="left" style={{ fontSize:'18px'}}>{idx+1}</TableCell>
                                                     <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
                                                     {
                                                         !showClientOnly && <TableCell align="left" style={{ fontSize:'18px'}}>{item.trader_fname} {item.trader_lname}</TableCell>

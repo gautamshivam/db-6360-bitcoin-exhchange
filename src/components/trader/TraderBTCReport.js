@@ -20,6 +20,7 @@ const TraderBTCReport = (props) => {
                         <Table aria-label="client report table">
                             <TableHead>
                                 <TableRow>
+                                    <TableCell align="left">Row</TableCell>
                                     <TableCell align="left">Client's Name</TableCell>
                                     <TableCell align="left">Quantity</TableCell>
                                     <TableCell align="left">Rate</TableCell>
@@ -31,10 +32,11 @@ const TraderBTCReport = (props) => {
                             </TableHead>
                             <TableBody>
                                 {
-                                    props.report.map((item) => {
+                                    props.report.map((item, idx) => {
                                         return(
                                             <TableRow key={item.tid}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor:`${item.transaction_type === "BUY" ? '#d6ffe1' : '#ffb0b0'}`}}>
+                                            <TableCell align="left" style={{ fontSize:'18px'}}>{idx+1}</TableCell>
                                             <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
                                             <TableCell align="left" style={{ fontSize:'18px'}}>{item.btc_qty}</TableCell>
                                             <TableCell align="left" style={{ fontSize:'18px'}}>${item.btc_rate}</TableCell>

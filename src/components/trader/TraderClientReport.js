@@ -17,6 +17,7 @@ const TraderClientReport = (props) => {
                     <Table aria-label="client report table">
                         <TableHead>
                             <TableRow>
+                                <TableCell>Row</TableCell>
                                 <TableCell>Client Name</TableCell>
                                 <TableCell align="left">Client's Email</TableCell>
                                 <TableCell align="left">FIAT Balance</TableCell>
@@ -25,9 +26,10 @@ const TraderClientReport = (props) => {
                         </TableHead>
                         <TableBody>
                             {
-                                props.report.map((item) => (
+                                props.report.map((item,idx) => (
                                     <TableRow key={item.client_id}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
+                                        <TableCell align="left" style={{ fontSize:'18px'}}>{idx+1}</TableCell>
                                         <TableCell align="left" style={{ fontSize:'18px'}}>{item.fname} {item.lname}</TableCell>
                                         <TableCell align="left" style={{ fontSize:'18px'}}>{item.email}</TableCell>
                                         <TableCell align="left" style={{ fontSize:'18px'}}>${item.fiat_balance}</TableCell>
