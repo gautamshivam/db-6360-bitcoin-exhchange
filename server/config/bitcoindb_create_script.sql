@@ -252,3 +252,33 @@ delimiter ;
 -- VALUES 
 -- (6, null , 2, 1000, 3000, 'BUY','FIAT', 1000, CURRENT_TIMESTAMP ),
 -- (6, null , 1, 1000, 2000, 'BUY','FIAT', 1000, CURRENT_TIMESTAMP );
+
+--triggers to update Membership level
+
+Delimiter //
+create trigger updateMembershipLevelBank AFTER INSERT ON bankTransactions
+for each row
+BEGIN
+DECLARE balance REAL;
+    select fiat_balance into balance from client WHERE client_id=NEW.client_id;
+    IF(balance > 100000) THEN
+BEGIN
+UPDATE client set membership_level='GOLD' WHERE client_id=NEW.client_id;
+    END;
+    END IF;
+END;//
+delimiter ;
+
+Delimiter //
+create trigger updateMembershipLevelBTC AFTER INSERT ON bitcoinTransactions
+for each row
+BEGIN
+DECLARE balance REAL;
+    select fiat_balance into balance from client WHERE client_id=NEW.client_id;
+    IF(balance > 100000) THEN
+BEGIN
+UPDATE client set membership_level='GOLD' WHERE client_id=NEW.client_id;
+    END;
+    END IF;
+END;//
+delimiter ;
