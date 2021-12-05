@@ -9,6 +9,7 @@ import Profile from './components/Profile';
 import TraderReport from './components/trader/TraderReport';
 import AllClients from './components/trader/AllClients';
 import ClientReport from './components/client/ClientReport';
+import Dashboard_Manager from './components/manager/DashboardManager';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route exact path="/trader-report" element={<TraderReport/>}/>
         <Route exact path="/all-clients" element={<AllClients/>}/>
         <Route exact path="/dashboard_client" element={<Dashboard_client/>}/>
+        <Route exact path="/dashboardmanager" element={<Dashboard_Manager/>}/>
       </Routes>
     </div>
   );
