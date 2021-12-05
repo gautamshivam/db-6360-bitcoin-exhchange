@@ -1,199 +1,117 @@
 import React, {useContext, useState, useEffect} from 'react'
 import {UserContext} from '../../UserProvider'
-import { Container,Nav, Navbar, NavDropdown, Form, FormControl, Button, Breadcrumb } from 'react-bootstrap'
-import { Card, Row, Col, Table, ProgressBar} from 'react-bootstrap'
+// import { Container,Nav, Navbar, NavDropdown, Form, FormControl, Button, Breadcrumb } from 'react-bootstrap'
+// import { Card, Row, Col, Table, ProgressBar} from 'react-bootstrap'
 import Axios from 'axios';
+import Box from "@mui/material/Box";
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+
+import TraderClientReport from './TraderClientReport';
+import TraderBankReport from './TraderBankReport';
+import TraderBTCReport from './TraderBTCReport';
+
+function TraderTabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`trader-tabpanel-${index}`}
+        aria-labelledby={`trader-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+}
 
 const TraderReport = (props) => {
 
 	const {user} = useContext(UserContext);
-	const [filterText, setFilterText] = useState('');
-	const [selectValue, setSelectValue] = useState('');
-	const [bankReport, setBankReport] = useState([]);
-	const [bitcoinReport, setBitCoinReport] = useState([]);
-	const [allUsers, setAllUsers] = useState([]);
+	const [report, setReport] = useState([])
+    const [bankReport, setBankReport] = useState([])
+    const [btcReport, setBTCReport] = useState([])
+    const [value, setValue] = useState(0)
 
 
+	// const [filterText, setFilterText] = useState('');
+	// const [selectValue, setSelectValue] = useState('');
+	// const [bankReport, setBankReport] = useState([]);
+	// const [bitcoinReport, setBitCoinReport] = useState([]);
+	// const [allUsers, setAllUsers] = useState([]);
 
-	
+
 	useEffect(() => {
-		fetch(`/traders/${user.user_id}/clients`)
-	    .then(res => res.json())
-	    .then((data) => {
-			console.log('all clients data fetched for trader:'+user.user_id, data)
-			if(Array.isArray(data))setAllUsers(data);
-	    })
-	}, [])
-
-	const handleSelectChange = (event)  => {
-		setSelectValue(event.target.value);
-		fetch(`/bank?client_id='+ ${event.target.value} + '&trader_id=${user.user_id}`)
-	    .then(res => res.json())
-	    .then((data) => {
-			console.log('bank report fetched', data);
-			if(Array.isArray(data))setBankReport(data);
-	    })
-
-	   	fetch(`/btc/trade?client_id='+ ${event.target.value} + '&trader_id=${user.user_id}`)
-	    .then(res => res.json())
-	    .then((data) => {
-			console.log('btc report fetched', data);
-			if(Array.isArray(data))setBitCoinReport(data);
-	    })
-	}
+        fetchReport()
+    }, [user])
 
 
-	const handleChange = (event) => {
-		setFilterText(event.target.value);
-	}
-	const handleSubmit = () => {
-	    fetch(`/bank?trader_id=${user.user_id}`)
-	    .then(res => res.json())
-	    .then((data) => {
-			console.log('bank report fetched', data);
-			if(Array.isArray(data)){
-				data = data.filter((item) => item.client_fname.toLowerCase().includes(filterText.toLowerCase()));
-				setBankReport(data);
-			}
-	    })
+    const fetchReport = () => {
 
-	   	fetch(`/btc/trade?trader_id=${user.user_id}`)
-	    .then(res => res.json())
-	    .then((data) => {
-			console.log('btc report fetched', data);
-			data = data.filter((item) => item.client_fname.toLowerCase().includes(filterText.toLowerCase()));
-			if(Array.isArray(data))setBitCoinReport(data);
-	    })
-	}
+		// fetch trader client report
+        Axios.get(`/traders/${user.user_id}/clients`)
+        .then((res) => {
+            console.log("client report",res.data);
+            if(Array.isArray(res.data))setReport(res.data.reverse())
+        });
 
-	const approveXact = (id) => {
-       Axios.put("/bank/"+id, {
-            status : "APPROVED"
-        }).then((res) => {
-            console.log("Transaction  Approved",res.data);
-        }).catch((err) => {
-            alert(err);
-        })
-        handleSubmit();
-    }
-	const cancelXact = (id) => {
-        Axios.put("/bank/"+id, {
-            status : "CANCEL"
-        }).then((res) => {
-            console.log("Transaction Cancelled",res.data);
-        }).catch((err) => {
-            alert(err);
-        })
-        handleSubmit();
+		//fetch bank txns
+        Axios.get(`/bank?trader_id=${user.user_id}`)
+        .then((res) => {
+            console.log("client's bank report",res.data);
+            if(Array.isArray(res.data))setBankReport(res.data.reverse())
+        });
+
+		// fetch btc
+        Axios.get(`/btc/trade?trader_id=${user.user_id}`)
+        .then((res) => {
+            console.log("client's btc report",res.data);
+            if(Array.isArray(res.data))setBTCReport(res.data.reverse())
+        });
     }
 
-	return (
-		<div >
-			<div>
-				<h4> Client Report and History </h4>
+	const handleTabChange = (event, newValue) => {
+        setValue(newValue);
+    };
+	
+	const txnUpdated = () => {
+		//fetch bank txns
+        Axios.get(`/bank?trader_id=${user.user_id}`)
+        .then((res) => {
+            console.log("client's bank report",res.data);
+            if(Array.isArray(res.data))setBankReport(res.data.reverse())
+        });
+	}
 
-				<p> Filter Client Based on : </p>
-
-				<Form>
-					<select value={selectValue} onChange={handleSelectChange} >
-						{
-							allUsers.map((item) => (
-								<option value={item.client_id}>{item.fname} {item.lname}</option>
-	  						))
-						}
-					</select>
-
-					<br/><br/>
-					<label>
-					  Enter Name/Address: <br/>
-					  <input type="text" value={filterText} onChange={handleChange} />
-					</label><br/>
-					<input type="button" value="Submit" onClick={handleSubmit} />
-				</Form>
-
-				<h4> Report of Client : </h4>
-				
-				<h5> Bank Transaction </h5>
-				<div>
-					<Table border='2'>
-						<thead>
-							<tr> 
-								<td>Client ID </td>
-								<td>Client Name </td>
-								<td>Date Of transaction</td>
-								<td>Transaction Type </td>
-								<td>Transaction Amount</td>
-								<td>Status </td>
-								<td>Action </td>
-							</tr>
-						</thead>
-						<tbody>
-							{bankReport.map(({ tid, client_id, client_fname, timestamp, type, amount, status }) => (
-								<tr key={tid}>
-									<td> {client_id} </td>
-									<td> {client_fname} </td>
-									<td> {timestamp} </td>
-									<td> {type} </td>
-									<td> {amount} </td>
-									<td> {status} </td> 
-									{
-											status === "PENDING" && <td> <Button  variant='contained'
-                    						style={{color:"green"}}
-                    					onClick={() => approveXact(tid)}>Approve
-                    					</Button>
-                    					<Button  variant='contained'
-                    						 
-                    						style={{color:"red"}}
-                    					onClick={() => cancelXact(tid)}>Cancel
-                    					</Button>
-                    				</td>
-									}
-									
-								</tr>
-							  ))}
-						</tbody>
-					</Table>
-				</div>
-
-				<br/><br/>
-				<br/><br/>
-				<h5> Bitcoin Transaction </h5>
-				<div>
-					<Table border='2'>
-						<thead>
-							<tr> 
-								<td>Client ID </td>
-								<td>Client Name </td>
-								<td>Date Of transaction</td>
-								<td>Transaction Type </td>
-								<td>Bitcoin Quantity</td>
-								<td>Bitcoin Rate </td>
-								<td>Commission Value</td>
-								<td>Commission Type</td>
-							</tr>
-						</thead>
-						<tbody>
-							{bitcoinReport.map(({ tid, client_id, client_fname, timestamp, transaction_type, btc_qty, btc_rate, commission_value, commission_type }) => (
-								<tr key={tid}>
-									<td> {client_id} </td>
-									<td> {client_fname} </td>
-									<td> {timestamp} </td>
-									<td> {transaction_type} </td>
-									<td> {btc_qty} </td>
-									<td> {btc_rate} </td>
-									<td> {commission_value} </td>
-									<td> {commission_type} </td>
-								</tr>
-							  ))}
-						</tbody>
-					</Table>
-				</div>
-
-			</div>
-		</div>
-	)
+    return (
+        <>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <div className="row justify-content-center">
+                <Tabs value={value} onChange={handleTabChange} aria-label="report tabs" centered>
+                    <Tab label="With Traders Report"  />
+                    <Tab label="Bank Transactions"  />
+                    <Tab label="BTC Transactions" />
+                </Tabs>
+                </div>
+                
+            </Box>
+            <TraderTabPanel value={value} index={0}>
+                <TraderClientReport report={report}/>
+            </TraderTabPanel>
+            <TraderTabPanel value={value} index={1}>
+                <TraderBankReport report={bankReport} txnUpdated={txnUpdated}/>
+            </TraderTabPanel>
+            <TraderTabPanel value={value} index={2}>
+                <TraderBTCReport report={btcReport}/>
+            </TraderTabPanel>
+        </>
+    )
 }
-
-
-
 export default TraderReport

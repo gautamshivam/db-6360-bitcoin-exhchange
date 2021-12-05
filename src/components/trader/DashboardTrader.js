@@ -31,9 +31,6 @@ const DashboardTrader = () => {
                     <Button  variant='contained'
                     style={{marginRight:"10px"}}
                     onClick={showReport}>Show Report</Button>
-                    <Button  variant='contained' 
-                    style={{marginRight:"10px"}}
-                    onClick={showAllClients}>With Clients Report</Button>
                 </Typography> 
             </div>
             <Divider style={{marginTop:"10px"}}/>
