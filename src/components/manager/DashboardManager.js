@@ -1,3 +1,4 @@
+import { Hidden } from '@mui/material';
 import React, { Component} from 'react'
 import {Form, Table} from 'react-bootstrap'
 import './DashboardManager.css'
@@ -10,10 +11,14 @@ import './DashboardManager.css'
         result:[],
         type:'all', //Daily, weekly or monthly
         start_date:'',
+        end_date:'',
+        month:'all',
         count:0
         };
         this.handleType=this.handleType.bind(this);
         this.handleStartDate=this.handleStartDate.bind(this);
+        this.handleEndDate=this.handleEndDate.bind(this);
+        this.handleMonth=this.handleMonth.bind(this);
         this.handleSubmit=this.handleSubmit.bind(this);
     }
 
@@ -25,9 +30,19 @@ import './DashboardManager.css'
         console.log('filter start date changed '+event.target.value);
         this.setState({start_date:event.target.value});
     }
+    handleEndDate(event){
+        console.log('filter end date changed '+event.target.value);
+        this.setState({end_date:event.target.value});
+    }
+    handleMonth(event){
+        console.log('filter month changed '+event.target.value);
+        this.setState({month:event.target.value});
+    }
     handleSubmit(event){ 
-        if(!Date.parse(this.state.start_date) && this.state.type!='all'){
+        if(this.state.type=='daily' || this.state.type=='monthly'){
+        if(!Date.parse(this.state.start_date) && !Date.parse(this.state.end_date) && this.state.type!='all' && this.state.month!='all'){
             alert('Enter the date format correctly')
+        }
         }
         fetch('http://localhost:5000/btc/trade')
         .then(res => res.json())
@@ -60,19 +75,24 @@ import './DashboardManager.css'
         }
 
         else if(this.state.type==='weekly'){
+            var end_date=new Date(this.state.end_date)
         console.log("w");
         var filtered=this.state.customers;
         //var currDAte = new Date();
     
         // var weekBeforeDate = new Date(currDAte.getTime() - (3*24*60*60*1000));
-        var req_date=new Date(date.getFullYear(),date.getMonth(),(date.getDate()+1))
+        //var req_date=new Date(date.getFullYear(),date.getMonth(),(date.getDate()+1))
+        var s_date=new Date(date.getFullYear(),date.getMonth(),(date.getDate()+1))
         //6 days + 24Hrs + 60Mins + 60 Secs=7 days
-        var weekBeforeDate=new Date((req_date).getTime()- (6*24*60*60*1000))
-        console.log(weekBeforeDate.getDate());
-        console.log(req_date.getDate())
-        var filtered=this.state.customers.filter((customers) =>new Date(customers.timestamp).getMonth()===weekBeforeDate.getMonth() &&
-        new Date(customers.timestamp).getFullYear()===weekBeforeDate.getFullYear() &&
-        new Date(customers.timestamp).getDate()>=weekBeforeDate.getDate() && new Date(customers.timestamp).getDate()<=req_date.getDate()
+        //var weekBeforeDate=new Date((req_date).getTime()- (6*24*60*60*1000))
+        var e_date=new Date(date.getFullYear(),date.getMonth(),(end_date.getDate())+1)
+        console.log(s_date.getDate());
+        console.log(e_date.getDate())
+        var filtered=this.state.customers.filter((customers) =>new Date(customers.timestamp).getMonth()===s_date.getMonth() &&
+        new Date(customers.timestamp).getMonth()===e_date.getMonth() &&
+        new Date(customers.timestamp).getFullYear()===e_date.getFullYear()&&
+        new Date(customers.timestamp).getFullYear()===s_date.getFullYear() &&
+        new Date(customers.timestamp).getDate()>=s_date.getDate() && new Date(customers.timestamp).getDate()<=e_date.getDate()
         );
         this.setState({result:filtered})
         console.log('filtered weekly',filtered);
@@ -85,15 +105,19 @@ import './DashboardManager.css'
         }
 
         else if(this.state.type==='monthly'){
-            var req_date=new Date(date.getFullYear(),date.getMonth(),(date.getDate()+1))
-            var MonthBeforeDate=new Date(req_date.getFullYear(),req_date.getMonth()-1,req_date.getDate())
-            console.log(MonthBeforeDate.toDateString());
-            console.log(req_date.toDateString());   
-            console.log(req_date.getDate())
-            var filtered=this.state.customers.filter((customers) => new Date(customers.timestamp).getTime()>=MonthBeforeDate.getTime() && new Date(customers.timestamp).getTime()<=req_date.getTime()
+            //var req_date=new Date(date.getFullYear(),date.getMonth(),(date.getDate()+1))
+            var cur_month=new Date(this.state.month);
+            var msg="Month="
+            console.log(msg+cur_month);
+            var c_month=new Date(cur_month.getMonth());
+            console.log(c_month);
+            // console.log(MonthBeforeDate.toDateString());
+            // console.log(req_date.toDateString());   
+            // console.log(req_date.getDate())
+            var filtered=this.state.customers.filter((customers) => new Date(customers.timestamp).getMonth()>=c_month && new Date(customers.timestamp).getMonth()<=c_month+1
             );
             this.setState({result:filtered})
-            console.log('filtered weekly',filtered);
+            console.log('filtered monthly',filtered);
             let c=filtered.length;
             this.setState({count:c})
             var buy_fil=this.state.result.filter((result)=> result.transaction_type==='BUY')
@@ -114,17 +138,63 @@ import './DashboardManager.css'
             <select value={this.state.type} onChange={this.handleType}>
             <option value='all'>All</option>
             <option value='daily'>Daily</option>
-
             <option value='weekly'>Weekly</option>
             <option value='monthly'>Monthly</option>
             </select>
             <br/>
-            <label>
-                            Enter a date:(in YYYY-MM-DD format) <br/>
-                            <input type="text" value={this.state.start_date} onChange={this.handleStartDate} />
-                    </label><br/>
+            {this.state.type==='daily'?
+            <div>
+            <label>Enter a date:(in YYYY-MM-DD format) <br/>
+                    <input type="text" value={this.state.start_date} onChange={this.handleStartDate} />
+            </label><br/>
+            </div>
+            :null
+        }
+            {this.state.type==='weekly'?
+            <div>
+            <label>Enter a start date:(in YYYY-MM-DD format) <br/>
+                    <input type="text" value={this.state.start_date} onChange={this.handleStartDate} />
+            </label><br/>
+            <label>Enter a end date:(in YYYY-MM-DD format) <br/>
+                    <input type="text" value={this.state.end_date} onChange={this.handleEndDate}/>
+            </label>
+            </div>
+            :null
+        }
+            <br/>
                         <br/>   
-                            <input type="button" value="Submit form"  onClick={this.handleSubmit}/>
+                        {
+                        this.state.type==='monthly'?
+                        <div>
+                        <label>
+                            
+                            <br/>
+                            Choose Month<br/>
+
+                                <select value={this.state.month} onChange={this.handleMonth}>
+                                <option value='January'>January</option>
+                                <option value='February'>February</option>
+                                <option value='March'>March</option>
+                                <option value='April'>April</option>
+                                <option value='May'>May</option>
+                                <option value='June'>June</option>
+                                <option value='July'>July</option>
+                                <option value='August'>August</option>
+                                <option value='September'>September</option>
+                                <option value='October'>October</option>
+                                <option value='November'>November</option>
+                                <option value='December'>December</option>
+                                
+                                
+                                
+            </select>
+            </label>
+            </div>
+            :null
+    }
+            <br/>
+            <input type="button" value="Submit form"  onClick={this.handleSubmit}/>
+                        
 
             </Form>    
         <div className="table">
