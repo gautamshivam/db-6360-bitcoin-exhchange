@@ -57,7 +57,7 @@ const ClientDeposit = () => {
                             value={amount}
                             autoComplete='off'
                             onChange={(e) => setamount(e.target.value)} required="true" />
-                        <Button variant="contained" onClick={onTransfer}>Transfer</Button>
+                        <Button variant="contained" onClick={onTransfer} disabled={amount < 1}>Transfer</Button>
                     </CardContent>
                 </Card>
             </Box>
