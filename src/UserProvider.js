@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react'
 
 export const UserContext = React.createContext();
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
 
 const UserProvider = ({children}) => {
     const [user, setUser] = useState({})
     const [clients, setClients] = useState([])
+    const [btcRate, setBtcRate] = useState(20)
     const [traders, setTraders] = useState([])
-    const value = {user, setUser, clients, setClients, traders, setTraders}
+    const value = {user, setUser, clients, setClients, traders, setTraders, btcRate}
 
     useEffect(() => {
         fetch(`/auth/user`).then((res) => res.json())
@@ -38,6 +42,16 @@ const UserProvider = ({children}) => {
         .catch((err) => {
             console.log(err);
         });
+
+        setInterval(() => {
+            let baseRate = 25;
+            let direction = Math.random();
+            if(direction === 0) {
+                setBtcRate(baseRate + getRandomInt(5))
+            } else {
+                setBtcRate(baseRate - getRandomInt(5))
+            }
+        }, 5000)
 
     },[])
 
