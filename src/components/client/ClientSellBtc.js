@@ -14,7 +14,7 @@ const ClientSellBtc = (props) => {
     const [msg, setMsg] = useState(false);
 
     const [quantity, setQuantity] = useState(0);
-    const [commissionRate, setCommissionRate] = useState(5);
+    const [commissionRate, setCommissionRate] = useState(0);
     const [commissionType, setCommissionType] = useState("FIAT");
     const [commissionValue, setCommissionValue] = useState(0);
     const [totalTxnValue, setTotalTxnVal] = useState(0);
