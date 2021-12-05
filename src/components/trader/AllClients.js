@@ -22,13 +22,12 @@ const AllClients = (props) => {
 	return (
 		<div >
 			<div>
-				<h4> All Clients </h4>
+				<h4> With Client Report </h4>
 				
 				<div>
 					<Table border='2'>
 						<thead>
 							<tr> 
-								<td>Client ID </td>
 								<td>Client Name </td>
 								<td>Email</td>
 								<td>Bitcoin Balance</td>
@@ -39,7 +38,6 @@ const AllClients = (props) => {
 						<tbody>
 							{allUsers.map(({ client_id, fname, email, phone, bitcoin_balance, fiat_balance, commission_value, commission_type }) => (
 								<tr>
-									<td> {client_id} </td>
 									<td> {fname} </td>
 									<td> {email} </td>
 									<td> {bitcoin_balance} </td>
