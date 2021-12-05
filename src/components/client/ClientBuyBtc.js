@@ -6,12 +6,16 @@ import Axios from 'axios';
 import { Typography } from '@mui/material'
 import { MenuItem } from '@mui/material';
 import { UserContext } from '../../UserProvider';
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const ClientBuyBtc = (props) => {
     const {user, btcCurrentRate} = useContext(UserContext)
+    const [showMsg, setShowMsg] = useState(false);
+    const [msg, setMsg] = useState(false);
+    
     const [quantity, setQuantity] = useState(0);
-    const [commissionRate, setCommissionRate] = useState(5);
+    const [commissionRate, setCommissionRate] = useState(0);
     const [commissionType, setCommissionType] = useState("FIAT");
     const [commissionValue, setCommissionValue] = useState(0);
     const [totalTxnValue, setTotalTxnVal] = useState(0);
@@ -20,22 +24,26 @@ const ClientBuyBtc = (props) => {
     quantityRef.current = quantity;
     const currRateRef = useRef(btcCurrentRate);
     currRateRef.current = btcCurrentRate;
+    const commTypeRef = useRef(commissionType);
+    commTypeRef.current = commissionType;
+    const commRateRef = useRef(commissionRate);
+    commRateRef.current = commissionRate;
 
     useEffect(() => {
         let interval = setInterval(() => {
-          calculate(quantityRef.current, currRateRef.current);
+          calculate(quantityRef.current, currRateRef.current, commTypeRef.current, commRateRef.current);
         }, 500);
         return () => {clearInterval(interval)}
     }, []);
 
-    const calculate = (qty, rate) => {
-        if(commissionRate === 0 || qty === 0) return;
-        if(commissionType === "FIAT") {
-            let com = (commissionRate * qty * rate) / 100;
+    const calculate = (qty, rate, type, commRate) => {
+        if(commRate === 0 || qty === 0) return;
+        if(type === "FIAT") {
+            let com = (commRate * qty * rate) / 100;
             setCommissionValue(com)
             setTotalTxnVal(com + qty * rate);
-        } else if(commissionType === "BTC") {
-            setCommissionValue(Math.ceil((commissionRate * qty) / 100))
+        } else if(type === "BTC") {
+            setCommissionValue(Math.ceil((commRate * qty) / 100))
             setTotalTxnVal(qty * rate);
         }
     }
@@ -51,19 +59,23 @@ const ClientBuyBtc = (props) => {
             commission_value:commissionValue
         }).then((res) => {
             console.log("client buy success",res.data);
+            setShowMsg(true);
+            setMsg("buy successfull");
         }).catch((err) => {
             alert(err);
         })
     }
 
     const onQtyChange = (e) => {
+        let commRate = props.level === "SILVER" ? 10 : 5;
+        setCommissionRate(commRate);
         setQuantity(e.target.value)
         if(commissionType === "FIAT") {
-            let com = (commissionRate * e.target.value * btcCurrentRate) / 100;
+            let com = (commRate * e.target.value * btcCurrentRate) / 100;
             setCommissionValue(com)
             setTotalTxnVal(com + e.target.value * btcCurrentRate);
         } else if(commissionType === "BTC") {
-            setCommissionValue(Math.ceil((commissionRate * e.target.value) / 100))
+            setCommissionValue(Math.ceil((commRate * e.target.value) / 100))
             setTotalTxnVal(e.target.value * btcCurrentRate);
         }
     }
@@ -79,12 +91,32 @@ const ClientBuyBtc = (props) => {
         }
     }
 
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setShowMsg(false);
+    };
+
     return (
         <div>
             <Box sx={{ boxShadow: 3, mb: 2 }}>
+                    <Snackbar open={showMsg} 
+                            autoHideDuration={2000} 
+                            onClose={handleClose} 
+                            anchorOrigin={{vertical:'bottom',horizontal:'center'}}>
+                            <Alert severity="info" sx={{ width: '100%' }}>
+                                {msg}
+                            </Alert>
+                    </Snackbar>
                 <Card variant="outlined">
-                    <CardHeader title={props.title} titleTypographyProps={{variant:'h5', fontWeight:'bold' }}></CardHeader>
-                    <CardContent>
+                    <CardHeader title={'('+props.level+') '+props.title} titleTypographyProps={{variant:'h5', fontWeight:'bold' }}></CardHeader>
+                    <CardContent> 
+                        
                         <TextField fullWidth id="standard-basic" 
                         select
                         label="Commission Type" 
@@ -104,7 +136,9 @@ const ClientBuyBtc = (props) => {
                             value={quantity}
                             autoComplete='off'
                             onChange={onQtyChange} required="true" />
-                        <Button variant="contained" onClick={onBuy}>Buy</Button>
+
+                        <Button variant="contained" onClick={onBuy} disabled={quantity < 5}>Buy</Button>
+
                         <Typography marginTop="10px"> 
                             <b>BTC Current Rate: </b>${btcCurrentRate}
                         </Typography>
@@ -115,7 +149,7 @@ const ClientBuyBtc = (props) => {
                             <b>BTC Value: </b>{btcCurrentRate*quantity}
                         </Typography>
                         <Typography> 
-                            <b>Commision Value: </b>${commissionValue}
+                            <b>Commision Value: </b>{commissionValue}
                         </Typography>
                         <Typography> 
                             <b>Total Transaction Value: ${totalTxnValue}</b>
