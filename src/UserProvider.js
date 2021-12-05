@@ -45,11 +45,12 @@ const UserProvider = ({children}) => {
 
         setInterval(() => {
             let baseRate = 25;
-            let direction = Math.random();
+            let direction = getRandomInt(2);
+            let rand = getRandomInt(20);
             if(direction === 0) {
-                setBtcRate(baseRate + getRandomInt(5))
+                setBtcRate(baseRate + rand)
             } else {
-                setBtcRate(baseRate - getRandomInt(5))
+                setBtcRate(baseRate - rand < 10 ? 25 : baseRate - rand)
             }
         }, 5000)
 

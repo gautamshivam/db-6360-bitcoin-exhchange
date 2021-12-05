@@ -68,6 +68,8 @@ const ClientSellBtc = (props) => {
     }
 
     const onQtyChange = (e) => {
+        let commRate = props.level === "SILVER" ? 10 : 5;
+        setCommissionRate(commRate);
         setQuantity(e.target.value)
         if(commissionType === "FIAT") {
             let com = (commissionRate * e.target.value * btcCurrentRate) / 100;
