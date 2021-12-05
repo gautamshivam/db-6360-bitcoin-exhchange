@@ -2,6 +2,7 @@ import React, {useContext, useState, useEffect} from 'react'
 import {UserContext} from '../../UserProvider'
 import { Container,Nav, Navbar, NavDropdown, Form, FormControl, Button, Breadcrumb } from 'react-bootstrap'
 import { Card, Row, Col, Table, ProgressBar} from 'react-bootstrap'
+import Axios from 'axios';
 
 const TraderReport = (props) => {
 
@@ -65,6 +66,27 @@ const TraderReport = (props) => {
 	    })
 	}
 
+	const approveXact = (id) => {
+       Axios.put("/bank/"+id, {
+            status : "APPROVED"
+        }).then((res) => {
+            console.log("Transaction  Approved",res.data);
+        }).catch((err) => {
+            alert(err);
+        })
+        handleSubmit();
+    }
+	const cancelXact = (id) => {
+        Axios.put("/bank/"+id, {
+            status : "CANCEL"
+        }).then((res) => {
+            console.log("Transaction Cancelled",res.data);
+        }).catch((err) => {
+            alert(err);
+        })
+        handleSubmit();
+    }
+
 	return (
 		<div >
 			<div>
@@ -102,6 +124,7 @@ const TraderReport = (props) => {
 								<td>Transaction Type </td>
 								<td>Transaction Amount</td>
 								<td>Status </td>
+								<td>Action </td>
 							</tr>
 						</thead>
 						<tbody>
@@ -112,7 +135,20 @@ const TraderReport = (props) => {
 									<td> {timestamp} </td>
 									<td> {type} </td>
 									<td> {amount} </td>
-									<td> {status} </td>
+									<td> {status} </td> 
+									{
+											status === "PENDING" && <td> <Button  variant='contained'
+                    						style={{color:"green"}}
+                    					onClick={() => approveXact(tid)}>Approve
+                    					</Button>
+                    					<Button  variant='contained'
+                    						 
+                    						style={{color:"red"}}
+                    					onClick={() => cancelXact(tid)}>Cancel
+                    					</Button>
+                    				</td>
+									}
+									
 								</tr>
 							  ))}
 						</tbody>

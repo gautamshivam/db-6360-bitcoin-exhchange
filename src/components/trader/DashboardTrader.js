@@ -21,9 +21,7 @@ const DashboardTrader = () => {
         <div>
             <div class="col-12">
                 <Typography>
-                    <Button  variant='contained' 
-                    style={{marginRight:"10px"}}
-                    onClick={showAllClients}>All Clients</Button>
+                    
                     <Button  variant='contained' 
                     style={{marginRight:"10px"}}
                     onClick={() => setShowBuy(true)}>Buy BTC</Button>
@@ -33,6 +31,9 @@ const DashboardTrader = () => {
                     <Button  variant='contained'
                     style={{marginRight:"10px"}}
                     onClick={showReport}>Show Report</Button>
+                    <Button  variant='contained' 
+                    style={{marginRight:"10px"}}
+                    onClick={showAllClients}>With Clients Report</Button>
                 </Typography> 
             </div>
             <Divider style={{marginTop:"10px"}}/>
