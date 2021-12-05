@@ -6,6 +6,7 @@ import { Typography } from '@mui/material'
 import Button from '@mui/material/Button';
 import Axios from 'axios';
 import { MenuItem } from '@mui/material';
+import {useEffect} from 'react'
 
 const TraderSellBtc = (props) => {
     const {user} = useContext(UserContext)
@@ -15,11 +16,24 @@ const TraderSellBtc = (props) => {
     const [commissionType, setCommissionType] = useState("FIAT");
     const [commissionValue, setCommissionValue] = useState(0);
     const [totalTxnValue, setTotalTxnVal] = useState(0);
+    const [clients, setAllclients] = useState([])
     const [clientid, setClienID] = useState(6);
+    const [selectedClient, setSelectedClient] = useState();
+
+    useEffect(() => {
+        fetch(`/traders/${user.user_id}/clients`)
+        .then(res => res.json())
+        .then((data) => {
+            console.log('data fetched',data);
+            if(Array.isArray(data))setAllclients(data);
+        })
+        .catch(console.log)
+
+    }, [])
 
     const onSell = () => {
         Axios.post("/btc/trade", {
-            client_id:clientid,
+            client_id:selectedClient,
             trader_id:user.user_id,
             btc_qty:quantity,
             btc_rate:btcRate,
@@ -71,11 +85,19 @@ const TraderSellBtc = (props) => {
                     <CardHeader title={props.title} titleTypographyProps={{variant:'h5', fontWeight:'bold', color:'red' }}></CardHeader>
                     <CardContent>
                     	<TextField fullWidth id="standard-basic" 
-                            label="Client ID" 
+                            select
+                            label="Select Client" 
                             style={{marginTop:"5px", marginBottom:"5px"}}
-                            value={clientid}
-                            autoComplete='off'
-                            onChange={onClientIDChange} required="true" />
+                            value={selectedClient}
+                            onChange={(e) => setSelectedClient(e.target.value) } required="true" >
+                                {
+                                    clients.map((client) => (
+                                        <MenuItem key={client.client_id} value={client.client_id}>
+                                            {client.fname} {client.lname}
+                                        </MenuItem>
+                                    ))
+                                }
+                        </TextField>
                         <TextField fullWidth id="standard-basic" 
                             select
                             label="Commission Type" 
@@ -95,7 +117,7 @@ const TraderSellBtc = (props) => {
                             value={quantity}
                             autoComplete='off'
                             onChange={onQtyChange} required="true" />
-                        <Button variant="contained" onClick={onSell}>Transfer</Button>
+                        <Button variant="contained" onClick={onSell} disabled={quantity < 5}>Sell For Client</Button>
 
                         <Typography marginTop="10px"> 
                             <b>BTC Rate: </b>{btcRate}
