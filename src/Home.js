@@ -3,7 +3,7 @@ import { UserContext } from './UserProvider'
 import DashboardClient from './components/client/DashboardClient'
 import DashboardTrader from './components/trader/DashboardTrader'
 import DashboardManager from './components/manager/DashboardManager'
-
+import Landing from './Landing';
 import Axios from 'axios'
 
 function Home(){
@@ -26,6 +26,9 @@ function Home(){
             }
             {
                 user.user_type === "MANAGER" && <DashboardManager/>
+            }
+            {
+                user.fname == null && <Landing/>
             }
         </div>
     )

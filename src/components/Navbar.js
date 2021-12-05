@@ -17,7 +17,6 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
-
 const Navbar = () => {
     const {user, setUser, btcCurrentRate} = useContext(UserContext)
     let navigate = useNavigate();
@@ -39,7 +38,7 @@ const Navbar = () => {
     }
 
     const onLogout = () => {
-        fetch('/auth/user').then(() => {
+        fetch('/auth/logout').then(() => {
             console.log('logged out')
             setUser({});
             navigate('/login')
