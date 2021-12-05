@@ -48,19 +48,21 @@ const ClientBTCReport = (props) => {
                                                 return(<></>);
                                             }
                                         }
+                                        {let col = item.transaction_type === "buy" ? '#ffb0b0' : 'red'}
+
                                         return(
                                             <TableRow key={item.tid}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
-                                            <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
-                                            {
-                                                !showClientOnly && <TableCell align="left" style={{ fontSize:'18px'}}>{item.trader_fname} {item.trader_lname}</TableCell>
-                                            }                                            
-                                            <TableCell align="left" style={{ fontSize:'18px'}}>{item.btc_qty}</TableCell>
-                                            <TableCell align="left" style={{ fontSize:'18px'}}>${item.btc_rate}</TableCell>
-                                            <TableCell align="left" style={{ fontSize:'18px'}}>{item.transaction_type}</TableCell>
-                                            <TableCell align="left" style={{ fontSize:'18px'}}>{item.commission_type}</TableCell>
-                                            <TableCell align="left" style={{ fontSize:'18px'}}>{item.commission_value}</TableCell>
-                                            <TableCell align="left" style={{ fontSize:'18px'}}>{new Date(item.timestamp).toDateString()}</TableCell>
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor:`${item.transaction_type === "BUY" ? '#d6ffe1' : '#ffb0b0'}`}}>
+                                                <TableCell align="left" style={{ fontSize:'18px'}}>{item.client_fname} {item.client_lname}</TableCell>
+                                                {
+                                                    !showClientOnly && <TableCell align="left" style={{ fontSize:'18px'}}>{item.trader_fname} {item.trader_lname}</TableCell>
+                                                }                                            
+                                                <TableCell align="left" style={{ fontSize:'18px'}}>{item.btc_qty}</TableCell>
+                                                <TableCell align="left" style={{ fontSize:'18px'}}>${item.btc_rate}</TableCell>
+                                                <TableCell align="left" style={{ fontSize:'18px'}}>{item.transaction_type}</TableCell>
+                                                <TableCell align="left" style={{ fontSize:'18px'}}>{item.commission_type}</TableCell>
+                                                <TableCell align="left" style={{ fontSize:'18px'}}>{item.commission_value}</TableCell>
+                                                <TableCell align="left" style={{ fontSize:'18px'}}>{new Date(item.timestamp).toDateString()}</TableCell>
                                             </TableRow>
                                         )
                                         
