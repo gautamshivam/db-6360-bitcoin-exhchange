@@ -19,7 +19,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 
 const Navbar = () => {
-    const {user, setUser, btcRate} = useContext(UserContext)
+    const {user, setUser, btcCurrentRate} = useContext(UserContext)
     let navigate = useNavigate();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -55,8 +55,8 @@ const Navbar = () => {
                     </li>
                     <li className="" style={{marginLeft:'150px', marginRight:'150px'}}>
                         <MonetizationOnIcon style={{color:'#FFFFFF', fontSize:'40px'}} onClick={navigateToHome}/>
-                        <Typography fontWeight="bold" color="white">
-                            Current Price: ${btcRate}
+                        <Typography fontWeight="bold" color="white" marginBottom="10px" fontSize="22px">
+                            Current Price: ${btcCurrentRate}
                         </Typography>
                     </li>
                     {

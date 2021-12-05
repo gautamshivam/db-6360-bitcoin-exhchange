@@ -9,9 +9,9 @@ function getRandomInt(max) {
 const UserProvider = ({children}) => {
     const [user, setUser] = useState({})
     const [clients, setClients] = useState([])
-    const [btcRate, setBtcRate] = useState(20)
+    const [btcCurrentRate, setBtcRate] = useState(20)
     const [traders, setTraders] = useState([])
-    const value = {user, setUser, clients, setClients, traders, setTraders, btcRate}
+    const value = {user, setUser, clients, setClients, traders, setTraders, btcCurrentRate}
 
     useEffect(() => {
         fetch(`/auth/user`).then((res) => res.json())
