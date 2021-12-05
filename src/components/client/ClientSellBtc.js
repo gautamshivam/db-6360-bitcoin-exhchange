@@ -116,7 +116,7 @@ const ClientSellBtc = (props) => {
                             </Alert>
                 </Snackbar>
                 <Card variant="outlined">
-                    <CardHeader title={props.title} titleTypographyProps={{variant:'h5', fontWeight:'bold', color:'red' }}></CardHeader>
+                    <CardHeader title={'('+props.level+') '+props.title} titleTypographyProps={{variant:'h5', fontWeight:'bold', color:'red' }}></CardHeader>
                     <CardContent>
                         <TextField fullWidth id="standard-basic" 
                             select
@@ -140,7 +140,7 @@ const ClientSellBtc = (props) => {
                         <Button variant="contained" onClick={onSell} disabled={quantity < 5}>SELL</Button>
 
                         <Typography marginTop="10px"> 
-                            <b>BTC Rate: </b>${btcCurrentRate}
+                            <b>BTC Current Rate: </b>${btcCurrentRate}
                         </Typography>
                         <Typography> 
                             <b>Commision Rate: </b>{commissionRate}%

@@ -146,7 +146,7 @@ const ClientBuyBtc = (props) => {
                             <b>Commision Rate: </b>{commissionRate}%
                         </Typography>
                         <Typography> 
-                            <b>BTC Value: </b>{btcCurrentRate*quantity}
+                            <b>BTC Value: </b>${btcCurrentRate*quantity}
                         </Typography>
                         <Typography> 
                             <b>Commision Value: </b>{commissionValue}
