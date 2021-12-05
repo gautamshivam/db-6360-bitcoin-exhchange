@@ -9,6 +9,11 @@ import ManagerBankReport from './ManagerBankReport';
 import ManagerBTCReport from './ManagerBTCReport';
 import { TextField } from '@mui/material';
 import { MenuItem } from '@mui/material';
+
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -35,6 +40,7 @@ const ManagerReport = () => {
     const [traderFilter, setTraderFilter] = useState(0)
     const [historyFilter, setHistoryFilter] = useState(0)
     const [sortBy, setSortBy] = useState(0)
+    const [date, setDate] = useState(null)
 
     const [bankReport, setBankReport] = useState([])
     const [btcReport, setBTCReport] = useState([])
@@ -187,6 +193,34 @@ const ManagerReport = () => {
             }
         }
     }
+    const onDateChange = (newValue) => {
+        setDate(newValue);
+        console.log(newValue.getDate());
+        Axios.get(`/bank`)
+        .then((res) => {
+            console.log("bank report",res.data);
+            if(Array.isArray(res.data)){
+                let filteredData = res.data.reverse();
+                filteredData = filteredData.filter((item) => compareDateEqual(new Date(item.timestamp), newValue))
+                setBankReport(filteredData)
+            }
+        });
+        Axios.get(`/btc/trade`)
+        .then((res) => {
+            console.log("client's btc report",res.data);
+            if(Array.isArray(res.data)){
+                let filteredData = res.data.reverse();
+                filteredData = filteredData.filter((item) => compareDateEqual(new Date(item.timestamp), newValue))
+                setBTCReport(filteredData)
+            }
+        });
+
+    }
+    const compareDateEqual = (d1,d2) => {
+        return d1.getYear() === d2.getYear() 
+        && d1.getMonth() === d2.getMonth() 
+        && d1.getDate() === d2.getDate();
+    }
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -275,6 +309,16 @@ const ManagerReport = () => {
                                     Date Descending
                                 </MenuItem>
                         </TextField>
+                        <Typography marginTop="10px">
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Select Date"
+                                    value={date}
+                                    onChange={onDateChange}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
+                        </Typography>
                 </div>
             </div>
             <TabPanel value={value} index={0}>
