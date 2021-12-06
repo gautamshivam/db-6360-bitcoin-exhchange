@@ -23,3 +23,8 @@ You will also see any lint errors in the console.
 ### `npm run client`
 
 this will run client project.
+
+## Database Configuration:
+
+### db scripts are available under path server/config 
+### please change SQL port in file server/config/db.config.js  | default is 3306
