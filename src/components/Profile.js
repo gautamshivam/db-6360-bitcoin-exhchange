@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState } from 'react'
 import { UserContext } from "../UserProvider";
 import Axios from 'axios';
 import Button from '@mui/material/Button';
+import { Divider, Box } from '@mui/material';
 
 const Profile = () => {
     // const[user, setUser] = useState({})
@@ -36,24 +37,61 @@ const Profile = () => {
             
             <div class="col-md-4">
                 {user !== null && <><h1>Welcome {user.fname}</h1>
-                        <Typography>
-                            User Type: {user.user_type}
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                User Type:
+                            </Box> {user.user_type}
                         </Typography>
-                        <Typography>
-                            First Name: {user.fname}
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                First Name:
+                            </Box> {user.fname}
                         </Typography>
-                        <Typography>
-                            Last Name: {user.lname}
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                Last Name:
+                            </Box> {user.lname}
                         </Typography>
-                        <Typography>
-                            Phone: {user.phone}
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                Phone:
+                            </Box> {user.phone}
                         </Typography>
-                        <Typography>
-                            Cell: {user.cell_number}
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                Cell:
+                            </Box> {user.cell_number}
                         </Typography>
-                        <Typography>
-                            Email: {user.email}
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                Email:
+                            </Box> {user.email}
                         </Typography>
+                        <Divider/>
+                        <Typography fontWeight="bold">
+                            Address
+                        </Typography>
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                Street:
+                            </Box> {user.street}
+                        </Typography>
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                City:
+                            </Box> {user.city}
+                        </Typography>
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                State:
+                            </Box> {user.state}
+                        </Typography>
+                        <Typography component='div'>
+                            <Box fontWeight='bold' display='inline'>
+                                Zip Code:
+                            </Box> {user.zip}
+                        </Typography>
+
                     </>
                 }
             </div>

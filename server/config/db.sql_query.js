@@ -1,12 +1,12 @@
 module.exports.findUserByIdSQL = (id) => {
-    return `select * from user where user_id=${id}`
+    return `select * from user, address where user.user_id=${id} and user.user_id = address.user_id`
 }
 
 module.exports.findUserByEmailPwdSQL = (auth) => {
-    return `select * from user where email='${auth.email}' and pwd='${auth.pwd}'`
+    return `select * from user, address where email='${auth.email}' and pwd='${auth.pwd}' and user.user_id = address.user_id`
 }
 module.exports.findUserByEmail = (email) => {
-    return `select * from user where email='${email}'`
+    return `select * from user, address where email='${email}' and user.user_id = address.user_id`
 }
 
 module.exports.findAllClientsSQL = () => {
