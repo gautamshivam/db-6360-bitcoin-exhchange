@@ -25,6 +25,7 @@ const TraderBTCReport = (props) => {
                                     <TableCell align="left">Quantity</TableCell>
                                     <TableCell align="left">Rate</TableCell>
                                     <TableCell align="left">Type</TableCell>
+                                    <TableCell align="left">Transaction Value</TableCell>
                                     <TableCell align="left">Commision Type</TableCell>
                                     <TableCell align="left">Commision Value</TableCell>
                                     <TableCell align="left">Date</TableCell>
@@ -41,6 +42,7 @@ const TraderBTCReport = (props) => {
                                             <TableCell align="left" style={{ fontSize:'18px'}}>{item.btc_qty}</TableCell>
                                             <TableCell align="left" style={{ fontSize:'18px'}}>${item.btc_rate}</TableCell>
                                             <TableCell align="left" style={{ fontSize:'18px'}}>{item.transaction_type}</TableCell>
+                                            <TableCell align="left" style={{ fontSize:'18px'}}>${item.transaction_value}</TableCell>
                                             <TableCell align="left" style={{ fontSize:'18px'}}>{item.commission_type}</TableCell>
                                             <TableCell align="left" style={{ fontSize:'18px'}}>{item.commission_value}</TableCell>
                                             <TableCell align="left" style={{ fontSize:'18px'}}>{new Date(item.timestamp).toDateString()}</TableCell>
