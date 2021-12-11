@@ -176,7 +176,7 @@ const TraderReport = (props) => {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <div className="row justify-content-center">
                 <Tabs value={value} onChange={handleTabChange} aria-label="report tabs" centered>
-                    <Tab label="With Traders Report"  />
+                    <Tab label="With Clients Report"  />
                     <Tab label="Bank Transactions"  />
                     <Tab label="BTC Transactions" />
                 </Tabs>

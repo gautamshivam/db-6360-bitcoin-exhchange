@@ -30,7 +30,7 @@ const Profile = () => {
                         Fiat Balance: ${client.fiat_balance}
                     </Typography>
                     <Typography fontSize="25px" fontWeight="bold">
-                        Membership Level: ${client.membership_level}
+                        Membership Level: {client.membership_level}
                     </Typography>
                 </div>
             }
